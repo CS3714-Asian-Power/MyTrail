@@ -289,7 +289,7 @@ public class Trail {
             }
 
             public static class AttribsBean {
-                @com.google.gson.annotations.SerializedName(""length"")
+//                @com.google.gson.annotations.SerializedName(""length"")
                 private String _$Length63; // FIXME check this code
 
                 public String get_$Length63() {
