@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">MyTrail</string>
-    <string name="title_activity_main_trail">MainTrail</string>
+    <string name="title_activity_main_trail">MyTrail</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="test_place">Duck Pond</string>
 </resources>
