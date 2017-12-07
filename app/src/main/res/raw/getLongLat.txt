@@ -1,0 +1,61 @@
+http://maps.googleapis.com/maps/api/geocode/json?address=24060
+
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "24060",
+               "short_name" : "24060",
+               "types" : [ "postal_code" ]
+            },
+            {
+               "long_name" : "Blacksburg",
+               "short_name" : "Blacksburg",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Virginia",
+               "short_name" : "VA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United States",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Blacksburg, VA 24060, USA",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 37.3478879,
+                  "lng" : -80.251628
+               },
+               "southwest" : {
+                  "lat" : 37.166912,
+                  "lng" : -80.6258709
+               }
+            },
+            "location" : {
+               "lat" : 37.2724841,
+               "lng" : -80.4326521
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 37.3478879,
+                  "lng" : -80.251628
+               },
+               "southwest" : {
+                  "lat" : 37.166912,
+                  "lng" : -80.6258709
+               }
+            }
+         },
+         "place_id" : "ChIJC_eBhtG_TYgRxL-Bdc43H9I",
+         "types" : [ "postal_code" ]
+      }
+   ],
+   "status" : "OK"
+}

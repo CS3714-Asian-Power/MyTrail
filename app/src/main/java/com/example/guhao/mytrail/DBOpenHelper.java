@@ -28,7 +28,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
-                    COLUMN_THUMNAIL+ " FLOAT)" ;
+                    COLUMN_THUMNAIL+ " TEXT)" ;
 
     private static final String SQL_CREATE_FAVORITE =
             "CREATE TABLE " + FAVORITE_TABLE + " (" +
@@ -36,7 +36,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
-                    COLUMN_THUMNAIL+ " FLOAT)" ;
+                    COLUMN_THUMNAIL+ " TEXT)" ;
 
     public DBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
