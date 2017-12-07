@@ -11,11 +11,16 @@ public class Place {
     private int photoId;
     String name;
     String location;
+    String rating;
 
     public Place(int photoId, String name, String location){
         this.photoId = photoId;
         this.name = name;
         this.location = location;
+    }
+
+    public Place() {
+        //default
     }
 
     public int getPhotoId() {
