@@ -1,5 +1,5 @@
 https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJg8RyzyKUTYgRJkjVL0ondyg&key=AIzaSyB8kchYPw50-ExmT0yW3yYVb1LFECU0fZE
-
+https://maps.googleapis.com/maps/api/place/textsearch/json?query=hiking+Blacksburg+VA&radius=10&key=AIzaSyB8kchYPw50-ExmT0yW3yYVb1LFECU0fZE
 {
    "html_attributions" : [],
    "result" : {

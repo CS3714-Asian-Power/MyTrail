@@ -9,11 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".activity.MainActivity"></activity>
         <activity
-            android:name=".MainTrail"
+            android:name=".activity.MainTrail"
             android:label="@string/title_activity_main_trail"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

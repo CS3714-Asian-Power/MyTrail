@@ -1,4 +1,4 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.data;
 
 import java.util.List;
 

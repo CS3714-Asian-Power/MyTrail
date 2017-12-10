@@ -1,10 +1,12 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.api;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.guhao.mytrail.data.AllPlaces;
+import com.example.guhao.mytrail.data.DetailPlace;
 import com.google.gson.Gson;
 
 /**

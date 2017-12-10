@@ -1,5 +1,6 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
+import com.example.guhao.mytrail.adapter.MyAdapter;
+import com.example.guhao.mytrail.data.Place;
+import com.example.guhao.mytrail.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +64,20 @@ public class MainTrail extends AppCompatActivity
         mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
+                mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(MainTrail.this, DetailActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
         //test
         List<Place> temp = new ArrayList<>();
