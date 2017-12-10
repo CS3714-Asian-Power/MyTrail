@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.guhao.mytrail.activity.MainTrail;
+import com.example.guhao.mytrail.data.AllPlaces;
+import com.example.guhao.mytrail.data.DetailPlace;
+import com.example.guhao.mytrail.database.DatabaseManager;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;

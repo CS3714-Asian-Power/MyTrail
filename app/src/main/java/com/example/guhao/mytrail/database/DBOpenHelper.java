@@ -1,4 +1,4 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,7 +1,9 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.guhao.mytrail.R;
 
 public class MainActivity extends AppCompatActivity {
 
