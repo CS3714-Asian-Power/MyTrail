@@ -17,7 +17,7 @@ import java.util.List;
  * Desc:
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
+public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
     private List<Place> places;
     private Context context;
 
