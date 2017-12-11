@@ -84,4 +84,12 @@ public class DownloadHelper {
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
+    public String getPhotoURL(int maxWidth, String photoID ){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?maxwidth=");
+        googlePlacesUrl.append(maxWidth);
+        googlePlacesUrl.append("&photoreference=" + photoID);
+        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
+    }
 }

@@ -154,7 +154,7 @@ public class MainTrail extends AppCompatActivity
         List<Place> temp;
         temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
 
-        Log.d("Place List", temp.get(0).getName());
+     //   Log.d("Place List", temp.get(0).getName());
 
         mAdapter = new MyAdapter(temp, this);
         mRecyclerView.setAdapter(mAdapter);

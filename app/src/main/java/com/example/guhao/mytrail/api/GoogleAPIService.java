@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.guhao.mytrail.activity.MainTrail;
-import com.example.guhao.mytrail.data.AllPlaces;
 import com.example.guhao.mytrail.data.DetailPlace;
 import com.example.guhao.mytrail.database.DatabaseManager;
 import com.squareup.okhttp.Call;
@@ -37,7 +36,7 @@ public class GoogleAPIService extends IntentService {
     public static final String URL = "url";
     //act redius location
 
-    private AllPlaces allPlaces;
+
     private DetailPlace detailPlace;
     private DownloadHelper downloadHelper;
     private DatabaseManager manager;
