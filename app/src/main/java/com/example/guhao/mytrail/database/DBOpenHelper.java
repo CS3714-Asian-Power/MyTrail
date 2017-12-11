@@ -19,8 +19,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PLACE_ID = "place_id";
     public static final String COLUMN_NAME= "name";
     public static final String COLUMN_RATING = "rating";
-    public static final String COLUMN_THUMNAIL = "photo";
+    public static final String COLUMN_THUMBNAIL = "photo";
     public static final String COLUMN_ID = "id";
+    public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String COLUMN_LATITUDE = "latitude";
+
+    public static final int RESULT_TABLE_ID = 1;
+    public static final int FAVORITE_TABLE_ID = 2;
 
     private static final String SQL_CREATE_RESULT =
             "CREATE TABLE " + PLACE_TABLE + " (" +
@@ -28,7 +33,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
-                    COLUMN_THUMNAIL+ " TEXT)" ;
+                    COLUMN_LONGITUDE + " FLOAT," +
+                    COLUMN_LATITUDE + " FLOAT," +
+                    COLUMN_THUMBNAIL+ " TEXT)" ;
 
     private static final String SQL_CREATE_FAVORITE =
             "CREATE TABLE " + FAVORITE_TABLE + " (" +
@@ -36,7 +43,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
-                    COLUMN_THUMNAIL+ " TEXT)" ;
+                    COLUMN_LONGITUDE + " FLOAT," +
+                    COLUMN_LATITUDE + " FLOAT," +
+                    COLUMN_THUMBNAIL+ " TEXT)" ;
 
     public DBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

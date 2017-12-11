@@ -1,4 +1,4 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.api;
 
 import android.util.Log;
 
@@ -38,10 +38,10 @@ public class DownloadHelper {
             }
 
             data = stringBuffer.toString();
-            Log.d("DownloadHelper: response", data.toString() );
+           // Log.d("DownloadHelper:", data.toString() );
             buffer.close();
         } catch (Exception e){
-            Log.d("DownloadHelper: Exception", e.toString());
+            Log.d("DownloadHelper:", e.toString());
         } finally {
             Stream.close();
             urlConnection.disconnect();

@@ -51,7 +51,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
     @Override
     public void onBindViewHolder(PlaceViewHolder holder, int position) {
         holder.name.setText(places.get(position).getName());
-        holder.location.setText(places.get(position).getLocation());
+      //  holder.location.setText(places.get(position).getLatitude());
     }
 
     @Override

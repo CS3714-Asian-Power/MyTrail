@@ -32,7 +32,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service
-            android:name=".GoogleAPIService"
+            android:name=".api.GoogleAPIService"
             android:enabled="true" />
     </application>
 
