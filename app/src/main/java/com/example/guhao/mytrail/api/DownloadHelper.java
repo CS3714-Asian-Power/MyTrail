@@ -1,4 +1,4 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.api;
 
 import android.util.Log;
 
@@ -38,10 +38,10 @@ public class DownloadHelper {
             }
 
             data = stringBuffer.toString();
-            Log.d("DownloadHelper: response", data.toString() );
+           // Log.d("DownloadHelper:", data.toString() );
             buffer.close();
         } catch (Exception e){
-            Log.d("DownloadHelper: Exception", e.toString());
+            Log.d("DownloadHelper:", e.toString());
         } finally {
             Stream.close();
             urlConnection.disconnect();
@@ -80,6 +80,14 @@ public class DownloadHelper {
     public String getUrlPlaceDetail(String PlaceID) {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=");
         googlePlacesUrl.append(PlaceID);
+        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
+    }
+    public String getPhotoURL(int maxWidth, String photoID ){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?maxwidth=");
+        googlePlacesUrl.append(maxWidth);
+        googlePlacesUrl.append("&photoreference=" + photoID);
         googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());

@@ -1,5 +1,7 @@
 package com.example.guhao.mytrail.data;
 
+import android.location.Location;
+
 /**
  * Author: GuHao
  * Date: 12/5/17
@@ -8,27 +10,28 @@ package com.example.guhao.mytrail.data;
  */
 
 public class Place {
-    private int photoId;
-    String name;
-    String location;
-    String rating;
+    private String name;
+    private String rating;
+    private String Id;
+    private String place_id;
+    private String thumbnail;
+    private String longitude;
+    private String latitude;
 
-    public Place(int photoId, String name, String location){
-        this.photoId = photoId;
-        this.name = name;
-        this.location = location;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public Place() {
-        //default
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
-    public int getPhotoId() {
-        return photoId;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setPhotoId(int photoId) {
-        this.photoId = photoId;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 
     public String getName() {
@@ -39,11 +42,37 @@ public class Place {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getRating() {
+        return rating;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setRating(String rating) {
+        this.rating = rating;
     }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public String getPlace_id() {
+        return place_id;
+    }
+
+    public void setPlace_id(String place_id) {
+        this.place_id = place_id;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+
 }

@@ -1,15 +1,12 @@
-package com.example.guhao.mytrail;
+package com.example.guhao.mytrail.api;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.guhao.mytrail.activity.MainTrail;
-import com.example.guhao.mytrail.data.AllPlaces;
 import com.example.guhao.mytrail.data.DetailPlace;
 import com.example.guhao.mytrail.database.DatabaseManager;
-import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -20,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by DanielPham on 12/9/17.
@@ -40,7 +36,7 @@ public class GoogleAPIService extends IntentService {
     public static final String URL = "url";
     //act redius location
 
-    private AllPlaces allPlaces;
+
     private DetailPlace detailPlace;
     private DownloadHelper downloadHelper;
     private DatabaseManager manager;
@@ -67,7 +63,7 @@ public class GoogleAPIService extends IntentService {
                     try{
                         response = downloadHelper.getResponses(search_url);
                         Log.d("Service", response.toString());
-                        populateDB(response);
+                        populateResultDB(response);
                     } catch (Exception e){
                        Log.d("Service Intent", e.toString());
                     }
@@ -85,11 +81,11 @@ public class GoogleAPIService extends IntentService {
 
     }
 
-    private void populateDB(String jsonData) {
+    private void populateResultDB(String jsonData) {
         Log.d("jsondata","can we see it:?"+jsonData);
-       // manager = new DatabaseManager(this.getApplicationContext());
-    //    manager.open();
-       // manager.deleteAll();
+        manager = new DatabaseManager(this.getApplicationContext());
+        manager.open();
+        manager.deleteAllResult();
 
         JSONObject jsonResponse = null;
         try {
@@ -104,37 +100,50 @@ public class GoogleAPIService extends IntentService {
 
             for (int i = 0; i < places_list_size; i++) {
 
-                JSONObject jsonFilm = places.getJSONObject(i);
+                JSONObject jsonPlace = places.getJSONObject(i);
 
                 double rating = 0;
                 String photo_reference = "null";
+                String name = jsonPlace.getString("name");
+                String place_id = jsonPlace.getString("place_id");
+                double longitude = 0;
+                double latitude = 0;
 
-                String name = jsonFilm.getString("name");
-                String place_id = jsonFilm.getString("place_id");
                 try{
-                    rating = jsonFilm.getDouble("rating");
-                    JSONArray photoArray = jsonFilm.getJSONArray("photos");
+                    rating = jsonPlace.getDouble("rating");
+
+                    JSONArray photoArray = jsonPlace.getJSONArray("photos");
                     JSONObject photo= photoArray.getJSONObject(0);
                     photo_reference = photo.getString("photo_reference");
+
+                    JSONObject Geometry = jsonPlace.getJSONObject("geometry");
+                    JSONObject location = Geometry.getJSONObject("location");
+                    longitude = location.getDouble("lng");
+                    latitude = location.getDouble("lat");
+
+
+
                 }catch (Exception e){
                     Log.d("Error ", e.toString());
                 }
 
 
-                Log.d("item ", ""+i);
-                Log.d("name", name);
-                Log.d("place_id", place_id);
-                Log.d("rating", " " + rating);
-                Log.d("photo", photo_reference);
+//                Log.d("item ", ""+i);
+//                Log.d("name", name);
+//                Log.d("place_id", place_id);
+//                Log.d("rating", " " + rating);
+//                Log.d("photo", photo_reference);
+//                Log.d("latitude", ""+latitude);
+//                Log.d("Longitude", ""+longitude);
                 //int like = 0;
 
-//                if (dateString != null && !dateString.equals("null")) {
-//                    //manager.insertMovieInfo(title,dateString,(float) rating );
-//                    manager.insertMovieInfo(title, dateString, (float) rating, (float) popularity, overview, poster, backdrop, like);
-//
-//                }
+                if (name != null && !name.equals("null")) {
+                    //manager.insertMovieInfo(title,dateString,(float) rating );
+                    manager.insertPlaceInfo(name,place_id, (float) rating,photo_reference, (float) longitude, (float) latitude );
+
+                }
             }
-           // manager.close();
+            manager.close();
 
             //broadcasting that it worked
 

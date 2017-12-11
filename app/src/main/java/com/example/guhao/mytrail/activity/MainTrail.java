@@ -1,13 +1,11 @@
 package com.example.guhao.mytrail.activity;
 
-import android.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,29 +25,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.BroadcastReceiver;
 
-import com.example.guhao.mytrail.DownloadHelper;
-import com.example.guhao.mytrail.GoogleAPIService;
+import com.example.guhao.mytrail.api.DownloadHelper;
+import com.example.guhao.mytrail.api.GoogleAPIService;
+import com.example.guhao.mytrail.database.DBOpenHelper;
+import com.example.guhao.mytrail.database.DatabaseManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.example.guhao.mytrail.adapter.MyAdapter;
@@ -78,15 +63,15 @@ public class MainTrail extends AppCompatActivity
     String activity = "hiking";
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
-    private final String url = "http://api.themoviedb.org/3/";
-    private static final String API_KEY = "deea9711e0770caae3fc592b028bb17e";
+
+    DatabaseManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
 
-        initView();
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -107,28 +92,15 @@ public class MainTrail extends AppCompatActivity
         receiver = new ResponseReceiver();
         registerReceiver(receiver, filter);
 
-
-
-
-        // after IntentService is done we will receive a broadcast telling us that it is time to fetch the list of movies from the db
-//        //registering a local broadcast receiver that is activated when "movies_fetched"
-//        //action happens
-//        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
-//        filter.addCategory(Intent.CATEGORY_DEFAULT);
-//        receiver = new ResponseReceiver();
-//        registerReceiver(receiver, filter);
-//
-//
-//        // starting an intent service that will fetch the list of movies from the URL below
-//       // String complete_url = url+ "movie/now_playing?api_key="+API_KEY+"&language=en-US&page=1";
         downloadHelper = new DownloadHelper();
-       String the_url = downloadHelper.getUrlCoordinate(lat,longitude,1000,activity);
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,1000,activity);
         Log.d("URl", the_url);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
         startService(msgIntent);
 
+        initView();
 
 
 
@@ -137,6 +109,8 @@ public class MainTrail extends AppCompatActivity
     }
 
     public void initView(){
+        manager = new DatabaseManager(this);
+        manager.open();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -177,11 +151,10 @@ public class MainTrail extends AppCompatActivity
         }));
 
         //test
-        List<Place> temp = new ArrayList<>();
-        temp.add(new Place(0, "duck pond", "blacksburg"));
-        temp.add(new Place(1, "maple ridge", "blacksburg"));
-        temp.add(new Place(2, "torg", "blacksburg"));
+        List<Place> temp;
+        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
 
+     //   Log.d("Place List", temp.get(0).getName());
 
         mAdapter = new MyAdapter(temp, this);
         mRecyclerView.setAdapter(mAdapter);
