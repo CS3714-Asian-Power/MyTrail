@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -158,8 +159,10 @@ public class MainTrail extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(MainTrail.this, MapView.class);
+                //  intent.putExtra("place_id", temp.get(position).getPlace_id());
+                startActivity(intent);
 //                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
 //                final View dialogView = LayoutInflater.from(MainTrail.this)
 //                        .inflate(R.layout.layout_setting_dialog,null);
@@ -200,6 +203,7 @@ public class MainTrail extends AppCompatActivity
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainTrail.this, DetailActivity.class);
+              //  intent.putExtra("place_id", temp.get(position).getPlace_id());
                 startActivity(intent);
             }
 
@@ -363,7 +367,7 @@ public class MainTrail extends AppCompatActivity
             return true;
         }
     }
-    public class ResponseReceiver extends BroadcastReceiver {
+    public class ResponseReceiver extends BroadcastReceiver{
         public static final String ACTION_RESP =
                 "Data_fetched";
 
