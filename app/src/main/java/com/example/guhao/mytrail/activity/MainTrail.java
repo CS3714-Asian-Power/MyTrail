@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -56,6 +58,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainTrail extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -395,6 +398,12 @@ public class MainTrail extends AppCompatActivity
 
          //   Log.d("Place List", temp.get(0).getName());
             Log.d("broadcast", "onReceive: " + temp.size());
+
+//            for (int i = 0; i < temp.size(); i++){
+//                double lat = Double.parseDouble(temp.get(i).getLatitude());
+//                double lon = Double.parseDouble(temp.get(i).getLongitude());
+//                temp.get(i).setAddress(getCityName(lat,lon));
+//            }
             mAdapter = new MyAdapter(temp, getApplicationContext());
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -404,5 +413,17 @@ public class MainTrail extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    public String getCityName(double lat, double lon){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+            String cityName = addresses.get(0).getAddressLine(0);
+            return cityName;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

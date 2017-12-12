@@ -1,6 +1,8 @@
 package com.example.guhao.mytrail.adapter;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.example.guhao.mytrail.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: GuHao
@@ -69,10 +72,14 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
         holder.rating.setText("Rating: " + places.get(position).getRating());
 
        // holder.location.setText(places.get(position).getLatitude());
+
+        holder.location.setText(places.get(position).getAddress());
     }
 
     @Override
     public int getItemCount() {
         return places.size();
     }
+
+
 }
