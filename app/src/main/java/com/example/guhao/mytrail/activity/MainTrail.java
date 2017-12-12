@@ -1,7 +1,9 @@
 package com.example.guhao.mytrail.activity;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -154,8 +157,27 @@ public class MainTrail extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
+                final View dialogView = LayoutInflater.from(MainTrail.this)
+                        .inflate(R.layout.layout_setting_dialog,null);
+                mDialog.setTitle(R.string.preference);
+                mDialog.setView(dialogView);
+                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: ok");
+                    }
+                });
+                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: cancel");
+
+                    }
+                });
+                mDialog.show();
             }
         });
 
@@ -328,13 +350,13 @@ public class MainTrail extends AppCompatActivity
            // displayMovies(1, DBOpenHelper.COLUMN_NAME_RELEASE_DATE);
             Log.d("broadcast", "onReceive: " + "done");
 //            unregisterReceiver(receiver);
-        List<Place> temp;
-        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
+            List<Place> temp;
+            temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
 
-     //   Log.d("Place List", temp.get(0).getName());
-
-        mAdapter = new MyAdapter(temp, getApplicationContext());
-        mRecyclerView.setAdapter(mAdapter);
+         //   Log.d("Place List", temp.get(0).getName());
+            Log.d("broadcast", "onReceive: " + temp.size());
+            mAdapter = new MyAdapter(temp, getApplicationContext());
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
