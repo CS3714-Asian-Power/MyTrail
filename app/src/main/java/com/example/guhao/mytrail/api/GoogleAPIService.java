@@ -49,7 +49,7 @@ public class GoogleAPIService extends IntentService {
 
     @Override
     protected void onHandleIntent( Intent intent) {
-            double longitude = -80.43301769999999, lat = 37.2432963;
+//            double longitude = -80.43301769999999, lat = 37.2432963;
             String response;
 
             Log.d("Intent Service", "onHandleIntent");

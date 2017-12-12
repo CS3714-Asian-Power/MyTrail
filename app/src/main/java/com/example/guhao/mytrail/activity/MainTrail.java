@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.BroadcastReceiver;
+import android.widget.Toast;
 
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
@@ -32,7 +34,9 @@ import com.example.guhao.mytrail.database.DatabaseManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -40,6 +44,7 @@ import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.example.guhao.mytrail.adapter.MyAdapter;
 import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +68,7 @@ public class MainTrail extends AppCompatActivity
     String activity = "hiking";
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     DatabaseManager manager;
 
@@ -70,7 +76,7 @@ public class MainTrail extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
-
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         checkPermission();
         startServiceBroadcaster();
         initView();
@@ -94,9 +100,26 @@ public class MainTrail extends AppCompatActivity
         startService(msgIntent);
     }
 
+
     public void checkPermission(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
+            if (checkLocationPermission()){
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    // Logic to handle location object
+                                    double latitude = location.getLatitude();
+                                    double lon = location.getLongitude();
+//                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
+                                    longitude = lon;
+                                    lat = latitude;
+                                }
+                            }
+                        });
+            }
         }
 
         //Check if Google Play Services Available or not

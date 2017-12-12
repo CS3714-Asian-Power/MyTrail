@@ -59,7 +59,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
     public void onBindViewHolder(PlaceViewHolder holder, int position) {
         DownloadHelper helper = new DownloadHelper();
         if(!places.get(position).getThumbnail().equals("null") ){
-            String thumbnail_URL = helper.getPhotoURL(1400, places.get(position).getThumbnail());
+            String thumbnail_URL = helper.getPhotoURL(1200, places.get(position).getThumbnail());
             Picasso.with(context).load(thumbnail_URL).into(holder.thumbnail);
         }
 
