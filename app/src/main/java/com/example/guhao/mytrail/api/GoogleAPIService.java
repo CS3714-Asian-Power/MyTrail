@@ -74,7 +74,7 @@ public class GoogleAPIService extends IntentService {
 //                    sendBroadcast(broadcastIntent);
 
                 } else if (GET_DETAIL.equals((intent_action))) {
-
+                    //request things for detailed view
                 }
             }
 
