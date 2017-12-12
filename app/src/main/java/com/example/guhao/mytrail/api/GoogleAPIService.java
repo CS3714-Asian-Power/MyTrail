@@ -2,6 +2,8 @@ package com.example.guhao.mytrail.api;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.example.guhao.mytrail.activity.MainTrail;
@@ -34,12 +36,15 @@ public class GoogleAPIService extends IntentService {
     public static final String LONGITUDE = "long";
     public static final String LATITUDE = "lat";
     public static final String URL = "url";
+    public static final int SUCCESS_RESULT = 0;
+    public static final int FAILURE_RESULT = 1;
     //act redius location
 
 
     private DetailPlace detailPlace;
     private DownloadHelper downloadHelper;
     private DatabaseManager manager;
+    private ResultReceiver mReceiver;
 
     public GoogleAPIService() {
         super("GoogleAPIService");
@@ -49,7 +54,7 @@ public class GoogleAPIService extends IntentService {
 
     @Override
     protected void onHandleIntent( Intent intent) {
-            double longitude = -80.43301769999999, lat = 37.2432963;
+//            double longitude = -80.43301769999999, lat = 37.2432963;
             String response;
 
             Log.d("Intent Service", "onHandleIntent");
@@ -57,6 +62,7 @@ public class GoogleAPIService extends IntentService {
                 final String intent_action = intent.getAction();
                 if (GET_RESULT.equals(intent_action)) {
                     String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
                     //String result = download(search_url);
                     //Log.d("Service", result.toString());
@@ -74,7 +80,23 @@ public class GoogleAPIService extends IntentService {
 //                    sendBroadcast(broadcastIntent);
 
                 } else if (GET_DETAIL.equals((intent_action))) {
+                    if(mReceiver == null){
+                        Log.d("Get Detail Service: ", "No receiver received. There is nowhere to send the results.");
+                        return;
+                    }
+                    String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
+                    DownloadHelper downloadHelper = new DownloadHelper();
+                    try{
+                        response = downloadHelper.getResponses(search_url);
+                        Log.d("Service", response.toString());
+                        DeliverPlaceDetail(SUCCESS_RESULT, response);
+                    } catch (Exception e){
+                        DeliverPlaceDetail(FAILURE_RESULT, e.toString());
+                        Log.d("Service Intent", e.toString());
+                    }
 
+                    //request things for detailed view
                 }
             }
 
@@ -121,21 +143,9 @@ public class GoogleAPIService extends IntentService {
                     longitude = location.getDouble("lng");
                     latitude = location.getDouble("lat");
 
-
-
                 }catch (Exception e){
                     Log.d("Error ", e.toString());
                 }
-
-
-//                Log.d("item ", ""+i);
-//                Log.d("name", name);
-//                Log.d("place_id", place_id);
-//                Log.d("rating", " " + rating);
-//                Log.d("photo", photo_reference);
-//                Log.d("latitude", ""+latitude);
-//                Log.d("Longitude", ""+longitude);
-                //int like = 0;
 
                 if (name != null && !name.equals("null")) {
                     //manager.insertMovieInfo(title,dateString,(float) rating );
@@ -156,31 +166,11 @@ public class GoogleAPIService extends IntentService {
 
             e.printStackTrace();
         }}
-    private String download(String url){
-        //manager = new DatabaseManager(this.getApplicationContext());
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Call call = client.newCall(request);
-        Response response = null;
-        String jsonData = null;
 
-        try {
-            response = call.execute();
-
-            if (response.isSuccessful()) {
-                jsonData = response.body().string();
-
-            } else {
-                jsonData = null;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return jsonData; //This is returned to onPostExecute()
-
+    private void DeliverPlaceDetail( int resultCode, String json){
+        Bundle bundle = new Bundle();
+        bundle.putString("place_detail", json);
+        mReceiver.send(resultCode, bundle);
     }
 
 }

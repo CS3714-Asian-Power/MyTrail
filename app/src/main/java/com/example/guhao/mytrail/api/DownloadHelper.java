@@ -14,6 +14,9 @@ import java.net.URL;
  */
 
 public class DownloadHelper {
+    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
+    private static final String KEY_2 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+
 
     public String getResponses(String theUrl) throws IOException{
         String data ="";
@@ -58,7 +61,7 @@ public class DownloadHelper {
         googlePlacesUrl.append("&radius=" + radius);
         //googlePlacesUrl.append("&type=" + nearbyPlace);
         //googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
@@ -71,7 +74,7 @@ public class DownloadHelper {
         googlePlacesUrl.append("+" + city);
         googlePlacesUrl.append("&radius=" + radius);
        // googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
@@ -80,7 +83,7 @@ public class DownloadHelper {
     public String getUrlPlaceDetail(String PlaceID) {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=");
         googlePlacesUrl.append(PlaceID);
-        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
@@ -88,7 +91,7 @@ public class DownloadHelper {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?maxwidth=");
         googlePlacesUrl.append(maxWidth);
         googlePlacesUrl.append("&photoreference=" + photoID);
-        googlePlacesUrl.append("&key=" + "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c");
+        googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
