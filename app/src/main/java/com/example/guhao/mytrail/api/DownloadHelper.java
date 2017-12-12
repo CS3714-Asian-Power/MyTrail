@@ -14,8 +14,8 @@ import java.net.URL;
  */
 
 public class DownloadHelper {
-    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
-    private static final String KEY_2 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+    private static final String KEY_2 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
+    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
 
 
     public String getResponses(String theUrl) throws IOException{
