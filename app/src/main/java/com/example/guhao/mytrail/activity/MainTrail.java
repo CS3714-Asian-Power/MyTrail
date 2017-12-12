@@ -1,10 +1,14 @@
 package com.example.guhao.mytrail.activity;
 
+import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +29,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.BroadcastReceiver;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
@@ -32,7 +39,9 @@ import com.example.guhao.mytrail.database.DatabaseManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -40,6 +49,7 @@ import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.example.guhao.mytrail.adapter.MyAdapter;
 import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +73,7 @@ public class MainTrail extends AppCompatActivity
     String activity = "hiking";
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     DatabaseManager manager;
 
@@ -70,21 +81,14 @@ public class MainTrail extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        checkPermission();
+        startServiceBroadcaster();
+        initView();
 
+    }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
-
-        //Check if Google Play Services Available or not
-        if (!CheckGooglePlayService()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
-            finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-        }
-
+    public void startServiceBroadcaster(){
         //registering a local broadcast receiver that is activated when "movies_fetched"
         //action happens
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
@@ -99,13 +103,48 @@ public class MainTrail extends AppCompatActivity
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
         startService(msgIntent);
+    }
 
-        initView();
+    public void startCityIntent(String city){
+
+        String new_url = downloadHelper.getUrlCityName(city,1000,activity);
+        Intent msgIntent = new Intent(this, GoogleAPIService.class);
+        msgIntent.setAction(GoogleAPIService.GET_RESULT);
+        msgIntent.putExtra(GoogleAPIService.URL, new_url);
+        startService(msgIntent);
+
+    }
 
 
+    public void checkPermission(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkLocationPermission()){
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    // Logic to handle location object
+                                    double latitude = location.getLatitude();
+                                    double lon = location.getLongitude();
+//                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
+                                    longitude = lon;
+                                    lat = latitude;
+                                }
+                            }
+                        });
+            }
+        }
 
-
-
+        //Check if Google Play Services Available or not
+        if (!CheckGooglePlayService()) {
+            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
+            finish();
+        }
+        else {
+            Log.d("onCreate","Google Play Services available.");
+        }
     }
 
     public void initView(){
@@ -118,8 +157,27 @@ public class MainTrail extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
+                final View dialogView = LayoutInflater.from(MainTrail.this)
+                        .inflate(R.layout.layout_setting_dialog,null);
+                mDialog.setTitle(R.string.preference);
+                mDialog.setView(dialogView);
+                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: ok");
+                    }
+                });
+                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: cancel");
+
+                    }
+                });
+                mDialog.show();
             }
         });
 
@@ -150,14 +208,14 @@ public class MainTrail extends AppCompatActivity
             }
         }));
 
-        //test
-        List<Place> temp;
-        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
-
-     //   Log.d("Place List", temp.get(0).getName());
-
-        mAdapter = new MyAdapter(temp, this);
-        mRecyclerView.setAdapter(mAdapter);
+//        //test
+//        List<Place> temp;
+//        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
+//
+//     //   Log.d("Place List", temp.get(0).getName());
+//
+//        mAdapter = new MyAdapter(temp, this);
+//        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -174,6 +232,27 @@ public class MainTrail extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_trail, menu);
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // This is your adapter that will be filtered
+//                Toast.makeText(getApplicationContext(),"textChanged :"+newText,Toast.LENGTH_LONG).show();
+
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                // **Here you can get the value "query" which is entered in the search box.**
+
+//                Toast.makeText(getApplicationContext(),"searchvalue :"+query,Toast.LENGTH_LONG).show();
+                startCityIntent(query);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
 
@@ -187,6 +266,8 @@ public class MainTrail extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if (id == R.id.search){
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -267,12 +348,21 @@ public class MainTrail extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             Log.d("demoapp","Data is fetched");
            // displayMovies(1, DBOpenHelper.COLUMN_NAME_RELEASE_DATE);
-            unregisterReceiver(receiver);
+            Log.d("broadcast", "onReceive: " + "done");
+//            unregisterReceiver(receiver);
+            List<Place> temp;
+            temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
+
+         //   Log.d("Place List", temp.get(0).getName());
+            Log.d("broadcast", "onReceive: " + temp.size());
+            mAdapter = new MyAdapter(temp, getApplicationContext());
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

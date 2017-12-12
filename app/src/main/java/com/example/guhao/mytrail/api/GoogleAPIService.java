@@ -49,7 +49,7 @@ public class GoogleAPIService extends IntentService {
 
     @Override
     protected void onHandleIntent( Intent intent) {
-            double longitude = -80.43301769999999, lat = 37.2432963;
+//            double longitude = -80.43301769999999, lat = 37.2432963;
             String response;
 
             Log.d("Intent Service", "onHandleIntent");
@@ -57,6 +57,7 @@ public class GoogleAPIService extends IntentService {
                 final String intent_action = intent.getAction();
                 if (GET_RESULT.equals(intent_action)) {
                     String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
                     //String result = download(search_url);
                     //Log.d("Service", result.toString());
@@ -74,7 +75,7 @@ public class GoogleAPIService extends IntentService {
 //                    sendBroadcast(broadcastIntent);
 
                 } else if (GET_DETAIL.equals((intent_action))) {
-
+                    //request things for detailed view
                 }
             }
 
