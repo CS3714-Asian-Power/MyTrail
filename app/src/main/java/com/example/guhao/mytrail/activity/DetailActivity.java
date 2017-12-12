@@ -67,7 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private DetailPlace parsePlaceDetail( String jsonData) {
+    private void parsePlaceDetail( String jsonData) {
         JSONObject jsonResponse = null;
         try {
 
@@ -107,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (name != null && !name.equals("null")) {
                     //manager.insertMovieInfo(title,dateString,(float) rating );
-                    manager.insertPlaceInfo(name, place_id, (float) rating, photo_reference, (float) longitude, (float) latitude);
+                    //manager.insertPlaceInfo(name, place_id, (float) rating, photo_reference, (float) longitude, (float) latitude);
 
                 }
             }

@@ -28,11 +28,13 @@
         <activity
             android:name=".activity.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".api.GoogleAPIService"
             android:enabled="true" />
+
+        <activity android:name=".activity.MapView"></activity>
     </application>
 
 </manifest>

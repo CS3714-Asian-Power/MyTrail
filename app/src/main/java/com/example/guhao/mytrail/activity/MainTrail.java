@@ -158,8 +158,10 @@ public class MainTrail extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(MainTrail.this, MapView.class);
+                //  intent.putExtra("place_id", temp.get(position).getPlace_id());
+                startActivity(intent);
 //                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
 //                final View dialogView = LayoutInflater.from(MainTrail.this)
 //                        .inflate(R.layout.layout_setting_dialog,null);
