@@ -57,6 +57,7 @@ public class GoogleAPIService extends IntentService {
                 final String intent_action = intent.getAction();
                 if (GET_RESULT.equals(intent_action)) {
                     String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
                     //String result = download(search_url);
                     //Log.d("Service", result.toString());

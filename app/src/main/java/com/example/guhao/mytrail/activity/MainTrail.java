@@ -102,6 +102,16 @@ public class MainTrail extends AppCompatActivity
         startService(msgIntent);
     }
 
+    public void startCityIntent(String city){
+
+        String new_url = downloadHelper.getUrlCityName(city,1000,activity);
+        Intent msgIntent = new Intent(this, GoogleAPIService.class);
+        msgIntent.setAction(GoogleAPIService.GET_RESULT);
+        msgIntent.putExtra(GoogleAPIService.URL, new_url);
+        startService(msgIntent);
+
+    }
+
 
     public void checkPermission(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -176,14 +186,14 @@ public class MainTrail extends AppCompatActivity
             }
         }));
 
-        //test
-        List<Place> temp;
-        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
-
-     //   Log.d("Place List", temp.get(0).getName());
-
-        mAdapter = new MyAdapter(temp, this);
-        mRecyclerView.setAdapter(mAdapter);
+//        //test
+//        List<Place> temp;
+//        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
+//
+//     //   Log.d("Place List", temp.get(0).getName());
+//
+//        mAdapter = new MyAdapter(temp, this);
+//        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -207,7 +217,7 @@ public class MainTrail extends AppCompatActivity
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
                 // This is your adapter that will be filtered
-                Toast.makeText(getApplicationContext(),"textChanged :"+newText,Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),"textChanged :"+newText,Toast.LENGTH_LONG).show();
 
                 return true;
             }
@@ -215,8 +225,8 @@ public class MainTrail extends AppCompatActivity
             public boolean onQueryTextSubmit(String query) {
                 // **Here you can get the value "query" which is entered in the search box.**
 
-                Toast.makeText(getApplicationContext(),"searchvalue :"+query,Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(getApplicationContext(),"searchvalue :"+query,Toast.LENGTH_LONG).show();
+                startCityIntent(query);
                 return true;
             }
         };
@@ -316,12 +326,21 @@ public class MainTrail extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             Log.d("demoapp","Data is fetched");
            // displayMovies(1, DBOpenHelper.COLUMN_NAME_RELEASE_DATE);
-            unregisterReceiver(receiver);
+            Log.d("broadcast", "onReceive: " + "done");
+//            unregisterReceiver(receiver);
+        List<Place> temp;
+        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
+
+     //   Log.d("Place List", temp.get(0).getName());
+
+        mAdapter = new MyAdapter(temp, getApplicationContext());
+        mRecyclerView.setAdapter(mAdapter);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }
