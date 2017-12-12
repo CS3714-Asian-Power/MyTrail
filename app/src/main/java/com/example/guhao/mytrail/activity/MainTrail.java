@@ -60,6 +60,7 @@ public class MainTrail extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private MenuItem filterItem;
 
     //add G Map
     private GoogleMap mMap;
@@ -233,8 +234,7 @@ public class MainTrail extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_trail, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
-        MenuItem filterItem = menu.findItem(R.id.filter);
-
+        filterItem = menu.findItem(R.id.filter);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
@@ -256,32 +256,6 @@ public class MainTrail extends AppCompatActivity
         };
         searchView.setOnQueryTextListener(queryTextListener);
 
-        filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-//                Log.d("filter", "onMenuItemClick: clicked");
-                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
-                final View dialogView = LayoutInflater.from(MainTrail.this)
-                        .inflate(R.layout.layout_setting_dialog,null);
-                mDialog.setTitle(R.string.preference);
-                mDialog.setView(dialogView);
-                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("dialog", "onClick: ok");
-                    }
-                });
-                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("dialog", "onClick: cancel");
-
-                    }
-                });
-                mDialog.show();
-                return false;
-            }
-        });
         return true;
     }
 
@@ -293,10 +267,30 @@ public class MainTrail extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.filter) {
+            AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
+            final View dialogView = LayoutInflater.from(MainTrail.this)
+                    .inflate(R.layout.layout_setting_dialog,null);
+            mDialog.setTitle(R.string.preference);
+            mDialog.setView(dialogView);
+            mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("dialog", "onClick: ok");
+                }
+            });
+            mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("dialog", "onClick: cancel");
+
+                }
+            });
+            mDialog.show();
             return true;
         }else if (id == R.id.search){
-
+            filterItem.setVisible(false);
+            return true
         }
 
         return super.onOptionsItemSelected(item);
