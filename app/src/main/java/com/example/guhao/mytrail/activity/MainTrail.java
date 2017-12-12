@@ -71,20 +71,13 @@ public class MainTrail extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
 
+        checkPermission();
+        startServiceBroadcaster();
+        initView();
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
+    }
 
-        //Check if Google Play Services Available or not
-        if (!CheckGooglePlayService()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
-            finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-        }
-
+    public void startServiceBroadcaster(){
         //registering a local broadcast receiver that is activated when "movies_fetched"
         //action happens
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
@@ -99,13 +92,21 @@ public class MainTrail extends AppCompatActivity
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
         startService(msgIntent);
+    }
 
-        initView();
+    public void checkPermission(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+        }
 
-
-
-
-
+        //Check if Google Play Services Available or not
+        if (!CheckGooglePlayService()) {
+            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
+            finish();
+        }
+        else {
+            Log.d("onCreate","Google Play Services available.");
+        }
     }
 
     public void initView(){
