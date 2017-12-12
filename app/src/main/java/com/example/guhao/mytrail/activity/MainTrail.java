@@ -30,6 +30,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.BroadcastReceiver;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -87,7 +89,6 @@ public class MainTrail extends AppCompatActivity
         checkPermission();
         startServiceBroadcaster();
         initView();
-
     }
 
     public void startServiceBroadcaster(){
@@ -115,6 +116,15 @@ public class MainTrail extends AppCompatActivity
         msgIntent.putExtra(GoogleAPIService.URL, new_url);
         startService(msgIntent);
 
+    }
+
+    public void startFilterIntent(String activity, String radius) {
+        int r = Integer.parseInt(radius);
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,r,activity);
+        Intent msgIntent = new Intent(this, GoogleAPIService.class);
+        msgIntent.setAction(GoogleAPIService.GET_RESULT);
+        msgIntent.putExtra(GoogleAPIService.URL, the_url);
+        startService(msgIntent);
     }
 
 
@@ -163,25 +173,6 @@ public class MainTrail extends AppCompatActivity
                 Intent intent = new Intent(MainTrail.this, MapView.class);
                 //  intent.putExtra("place_id", temp.get(position).getPlace_id());
                 startActivity(intent);
-//                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
-//                final View dialogView = LayoutInflater.from(MainTrail.this)
-//                        .inflate(R.layout.layout_setting_dialog,null);
-//                mDialog.setTitle(R.string.preference);
-//                mDialog.setView(dialogView);
-//                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Log.d("dialog", "onClick: ok");
-//                    }
-//                });
-//                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Log.d("dialog", "onClick: cancel");
-//
-//                    }
-//                });
-//                mDialog.show();
             }
         });
 
@@ -275,12 +266,34 @@ public class MainTrail extends AppCompatActivity
             AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
             final View dialogView = LayoutInflater.from(MainTrail.this)
                     .inflate(R.layout.layout_setting_dialog,null);
+            final EditText editText_radius = dialogView.findViewById(R.id.edittext_radius);
+            final CheckBox cb_hiking = dialogView.findViewById(R.id.hiking);
+            final CheckBox cb_biking = dialogView.findViewById(R.id.biking);
+            final CheckBox cb_camping = dialogView.findViewById(R.id.camping);
+            final CheckBox cb_trailing = dialogView.findViewById(R.id.climbing);
+
             mDialog.setTitle(R.string.preference);
             mDialog.setView(dialogView);
             mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Log.d("dialog", "onClick: ok");
+                    String r = editText_radius.getText().toString();
+                    String a = "";
+                    if (cb_hiking.isChecked())
+                        a = a + "hiking+";
+                    if (cb_biking.isChecked())
+                        a = a + "biking+";
+                    if (cb_camping.isChecked())
+                        a = a + "camping+";
+                    if (cb_trailing.isChecked())
+                        a = a + "climbing";
+                    if (a.substring(a.length() - 1).equals("+"))
+                        a = a.substring(0, a.length() - 1);
+
+                    Log.d("filter", "onClick: " + a);
+                    activity = a;
+                    startFilterIntent(activity,r);
                 }
             });
             mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -294,7 +307,7 @@ public class MainTrail extends AppCompatActivity
             return true;
         }else if (id == R.id.search){
             filterItem.setVisible(false);
-            return true
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
