@@ -111,6 +111,8 @@ public class MainTrail extends AppCompatActivity
     public void initView(){
         manager = new DatabaseManager(this);
         manager.open();
+        final List<Place> temp;
+        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -141,6 +143,7 @@ public class MainTrail extends AppCompatActivity
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainTrail.this, DetailActivity.class);
+                intent.putExtra("place_id", temp.get(position).getPlace_id());
                 startActivity(intent);
             }
 
@@ -151,8 +154,6 @@ public class MainTrail extends AppCompatActivity
         }));
 
         //test
-        List<Place> temp;
-        temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
 
      //   Log.d("Place List", temp.get(0).getName());
 
