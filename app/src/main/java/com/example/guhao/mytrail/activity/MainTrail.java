@@ -157,27 +157,27 @@ public class MainTrail extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
-                final View dialogView = LayoutInflater.from(MainTrail.this)
-                        .inflate(R.layout.layout_setting_dialog,null);
-                mDialog.setTitle(R.string.preference);
-                mDialog.setView(dialogView);
-                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("dialog", "onClick: ok");
-                    }
-                });
-                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("dialog", "onClick: cancel");
-
-                    }
-                });
-                mDialog.show();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+//                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
+//                final View dialogView = LayoutInflater.from(MainTrail.this)
+//                        .inflate(R.layout.layout_setting_dialog,null);
+//                mDialog.setTitle(R.string.preference);
+//                mDialog.setView(dialogView);
+//                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Log.d("dialog", "onClick: ok");
+//                    }
+//                });
+//                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Log.d("dialog", "onClick: cancel");
+//
+//                    }
+//                });
+//                mDialog.show();
             }
         });
 
@@ -233,6 +233,8 @@ public class MainTrail extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_trail, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
+        MenuItem filterItem = menu.findItem(R.id.filter);
+
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
@@ -253,6 +255,33 @@ public class MainTrail extends AppCompatActivity
             }
         };
         searchView.setOnQueryTextListener(queryTextListener);
+
+        filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+//                Log.d("filter", "onMenuItemClick: clicked");
+                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
+                final View dialogView = LayoutInflater.from(MainTrail.this)
+                        .inflate(R.layout.layout_setting_dialog,null);
+                mDialog.setTitle(R.string.preference);
+                mDialog.setView(dialogView);
+                mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: ok");
+                    }
+                });
+                mDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("dialog", "onClick: cancel");
+
+                    }
+                });
+                mDialog.show();
+                return false;
+            }
+        });
         return true;
     }
 
