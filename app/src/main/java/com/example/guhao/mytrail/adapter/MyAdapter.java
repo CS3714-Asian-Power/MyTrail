@@ -1,6 +1,8 @@
 package com.example.guhao.mytrail.adapter;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.example.guhao.mytrail.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: GuHao
@@ -60,7 +63,9 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
         DownloadHelper helper = new DownloadHelper();
         if(!places.get(position).getThumbnail().equals("null") ){
             String thumbnail_URL = helper.getPhotoURL(1200, places.get(position).getThumbnail());
-            Picasso.with(context).load(thumbnail_URL).into(holder.thumbnail);
+            Picasso picasso = Picasso.with(context);
+            picasso.load(thumbnail_URL).into(holder.thumbnail);
+
         }
 
         holder.name.setText(places.get(position).getName());
@@ -68,10 +73,14 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
         holder.location.setText(places.get(position).getAddress());
 
        // holder.location.setText(places.get(position).getLatitude());
+
+        holder.location.setText(places.get(position).getAddress());
     }
 
     @Override
     public int getItemCount() {
         return places.size();
     }
+
+
 }
