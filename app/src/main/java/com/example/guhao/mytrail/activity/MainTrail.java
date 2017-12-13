@@ -288,11 +288,15 @@ public class MainTrail extends AppCompatActivity
                         a = a + "camping+";
                     if (cb_trailing.isChecked())
                         a = a + "climbing";
-                    if (a.substring(a.length() - 1).equals("+"))
-                        a = a.substring(0, a.length() - 1);
+                    if (a.length() > 0) {
+                        if (a.substring(a.length() - 1).equals("+"))
+                            a = a.substring(0, a.length() - 1);
+                        Log.d("filter", "onClick: " + a);
+                        activity = a;
+                    }else{
+                        activity = "hiking";
+                    }
 
-                    Log.d("filter", "onClick: " + a);
-                    activity = a;
                     startFilterIntent(activity,r);
                 }
             });
