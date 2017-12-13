@@ -1,28 +1,29 @@
 package com.example.guhao.mytrail.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.DetailPlace;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class DetailActivity extends AppCompatActivity {
-
-
+    private TextView test_tv;
+    private String place_id;
+    private ResponseReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,14 @@ public class DetailActivity extends AppCompatActivity {
 //
 //        Log.d("Place ID:", place_id);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        initView();
+        if (getIntent() != null){
+            place_id = getIntent().getStringExtra("place_id");
+            Log.d("place_id_detail", "onCreate: " + place_id);
+        }
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,89 +50,45 @@ public class DetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        startServiceBroadcaster();
     }
 
+    public void startServiceBroadcaster(){
+        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new ResponseReceiver();
+        registerReceiver(receiver,filter);
 
-    private class JSONReciever extends ResultReceiver{
+        DownloadHelper downloadHelper = new DownloadHelper();
+        String the_url = downloadHelper.getUrlPlaceDetail(place_id);
+        Intent msgIntent = new Intent(this, GoogleAPIService.class);
+        msgIntent.setAction(GoogleAPIService.GET_DETAIL);
+        msgIntent.putExtra(GoogleAPIService.URL, the_url);
+        startService(msgIntent);
+    }
 
-        public JSONReciever(Handler handler) {
-            super(handler);
-        }
+    public void initView(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        test_tv = findViewById(R.id.test_tv);
+
+    }
+
+    public class ResponseReceiver extends BroadcastReceiver {
+        public static final String ACTION_RESP =
+                "Data_fetched";
 
         @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-            Log.d("Json",resultData.getString("place_detail"));
+        public void onReceive(Context context, Intent intent) {
+            String json = intent.getStringExtra("response");
 
-            // Show a toast message if an address was found.
-            if (resultCode == GoogleAPIService.SUCCESS_RESULT) {
-              //  address_view.setText(resultData.getString(Constants.RESULT_DATA_KEY));
-
-                //readData();
-            }
+            Gson gson = new Gson();
+            DetailPlace detailPlace = gson.fromJson(json, DetailPlace.class);
+            Log.d("detail_activity", "onReceive: " + detailPlace.getStatus());
 
         }
     }
 
-    private void parsePlaceDetail( String jsonData) {
-        JSONObject jsonResponse = null;
-        try {
-
-            jsonResponse = new JSONObject(jsonData);
-
-            JSONArray places = jsonResponse.getJSONArray("results");
-
-            int places_list_size = places.length();
-
-
-            for (int i = 0; i < places_list_size; i++) {
-
-                JSONObject jsonPlace = places.getJSONObject(i);
-
-                double rating = 0;
-                String photo_reference = "null";
-                String name = jsonPlace.getString("name");
-                String place_id = jsonPlace.getString("place_id");
-                double longitude = 0;
-                double latitude = 0;
-
-                try {
-                    rating = jsonPlace.getDouble("rating");
-
-                    JSONArray photoArray = jsonPlace.getJSONArray("photos");
-                    JSONObject photo = photoArray.getJSONObject(0);
-                    photo_reference = photo.getString("photo_reference");
-
-                    JSONObject Geometry = jsonPlace.getJSONObject("geometry");
-                    JSONObject location = Geometry.getJSONObject("location");
-                    longitude = location.getDouble("lng");
-                    latitude = location.getDouble("lat");
-
-                } catch (Exception e) {
-                    Log.d("Error ", e.toString());
-                }
-
-                if (name != null && !name.equals("null")) {
-                    //manager.insertMovieInfo(title,dateString,(float) rating );
-                    //manager.insertPlaceInfo(name, place_id, (float) rating, photo_reference, (float) longitude, (float) latitude);
-
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public DetailPlace getPlaceDetail(String place_id){
-//        DownloadHelper downloadHelper = new DownloadHelper();
-//        String detail_url = downloadHelper.getUrlPlaceDetail(place_id);
-//        try{
-//            String Data = downloadHelper.getResponses(detail_url);
-//        } catch (Exception e){
-//            Log.d("Get Detail Error:", e.toString());
-//        }
-//
-//
-//
-//    }
 }

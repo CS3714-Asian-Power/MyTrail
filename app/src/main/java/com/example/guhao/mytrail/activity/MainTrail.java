@@ -64,7 +64,7 @@ public class MainTrail extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private MyAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private MenuItem filterItem;
 
@@ -194,7 +194,7 @@ public class MainTrail extends AppCompatActivity
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainTrail.this, DetailActivity.class);
-              //  intent.putExtra("place_id", temp.get(position).getPlace_id());
+                intent.putExtra("place_id", mAdapter.getPlace(position).getPlace_id());
                 startActivity(intent);
             }
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import com.example.guhao.mytrail.activity.DetailActivity;
 import com.example.guhao.mytrail.activity.MainTrail;
 import com.example.guhao.mytrail.data.DetailPlace;
 import com.example.guhao.mytrail.database.DatabaseManager;
@@ -57,9 +58,10 @@ public class GoogleAPIService extends IntentService {
 //            double longitude = -80.43301769999999, lat = 37.2432963;
             String response;
 
-            Log.d("Intent Service", "onHandleIntent");
+//            Log.d("Intent_Service", "onHandleIntent");
             if (intent != null) {
                 final String intent_action = intent.getAction();
+
                 if (GET_RESULT.equals(intent_action)) {
                     String search_url = intent.getStringExtra(URL);
                     Log.d("search_url", "onHandleIntent: " + search_url);
@@ -80,10 +82,12 @@ public class GoogleAPIService extends IntentService {
 //                    sendBroadcast(broadcastIntent);
 
                 } else if (GET_DETAIL.equals((intent_action))) {
-                    if(mReceiver == null){
-                        Log.d("Get Detail Service: ", "No receiver received. There is nowhere to send the results.");
-                        return;
-                    }
+//                    if(mReceiver == null){
+//                        Log.d("Get Detail Service: ", "No receiver received. There is nowhere to send the results.");
+//                        return;
+//                    }
+                    Log.d("Intent_Service", "onHandleIntent" + intent_action);
+
                     String search_url = intent.getStringExtra(URL);
                     Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
@@ -170,9 +174,15 @@ public class GoogleAPIService extends IntentService {
         }}
 
     private void DeliverPlaceDetail( int resultCode, String json){
-        Bundle bundle = new Bundle();
-        bundle.putString("place_detail", json);
-        mReceiver.send(resultCode, bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("place_detail", json);
+//        mReceiver.send(resultCode, bundle);
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.putExtra("response", json);
+        broadcastIntent.setAction(DetailActivity.ResponseReceiver.ACTION_RESP);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        sendBroadcast(broadcastIntent);
     }
 
 }
