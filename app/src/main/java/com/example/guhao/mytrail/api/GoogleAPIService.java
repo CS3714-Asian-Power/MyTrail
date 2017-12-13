@@ -126,12 +126,14 @@ public class GoogleAPIService extends IntentService {
 
                 double rating = 0;
                 String photo_reference = "null";
+                String address = "null";
                 String name = jsonPlace.getString("name");
                 String place_id = jsonPlace.getString("place_id");
                 double longitude = 0;
                 double latitude = 0;
 
                 try{
+                    address = jsonPlace.getString("formatted_address");
                     rating = jsonPlace.getDouble("rating");
 
                     JSONArray photoArray = jsonPlace.getJSONArray("photos");
@@ -149,7 +151,7 @@ public class GoogleAPIService extends IntentService {
 
                 if (name != null && !name.equals("null")) {
                     //manager.insertMovieInfo(title,dateString,(float) rating );
-                    manager.insertPlaceInfo(name,place_id, (float) rating,photo_reference, (float) longitude, (float) latitude );
+                    manager.insertPlaceInfo(name,place_id, (float) rating,photo_reference, address, (float) longitude, (float) latitude );
 
                 }
             }

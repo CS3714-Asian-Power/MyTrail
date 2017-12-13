@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "MyTrail.db";
+    private static final String DATABASE_NAME = "MyTrail2.db";
     private static final int DATABASE_VERSION = 1;
     public static final String WEATHER_TABLE  = "weather";
     public static final String PLACE_TABLE = "places";
@@ -23,6 +23,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_LONGITUDE = "longitude";
     public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_ADDRESS = "address";
 
     public static final int RESULT_TABLE_ID = 1;
     public static final int FAVORITE_TABLE_ID = 2;
@@ -32,6 +33,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
+                    COLUMN_ADDRESS + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
                     COLUMN_LONGITUDE + " FLOAT," +
                     COLUMN_LATITUDE + " FLOAT," +
@@ -42,6 +44,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_NAME + " TEXT," +
                     COLUMN_PLACE_ID + " TEXT," +
+                    COLUMN_ADDRESS + " TEXT," +
                     COLUMN_RATING + " FLOAT," +
                     COLUMN_LONGITUDE + " FLOAT," +
                     COLUMN_LATITUDE + " FLOAT," +
