@@ -65,6 +65,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
 
         holder.name.setText(places.get(position).getName());
         holder.rating.setText("Rating: " + places.get(position).getRating());
+        holder.location.setText(places.get(position).getAddress());
 
        // holder.location.setText(places.get(position).getLatitude());
     }

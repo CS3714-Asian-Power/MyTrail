@@ -17,6 +17,7 @@ public class Place {
     private String thumbnail;
     private String longitude;
     private String latitude;
+    private String address;
 
     public String getLongitude() {
         return longitude;
@@ -75,4 +76,11 @@ public class Place {
     }
 
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

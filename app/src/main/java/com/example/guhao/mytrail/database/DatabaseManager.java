@@ -31,10 +31,11 @@ public class DatabaseManager {
         dbOpenHelper.close();
     }
 
-    public void insertPlaceInfo(String name, String place_id, float rating, String thumbnail, double longitude, double latitude ){
+    public void insertPlaceInfo(String name, String place_id, float rating, String thumbnail, String address, double longitude, double latitude ){
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.COLUMN_NAME, name);
         values.put(DBOpenHelper.COLUMN_PLACE_ID, place_id);
+        values.put(DBOpenHelper.COLUMN_ADDRESS, address);
         values.put(DBOpenHelper.COLUMN_RATING, rating);
         values.put(DBOpenHelper.COLUMN_THUMBNAIL, thumbnail);
         values.put(DBOpenHelper.COLUMN_LONGITUDE, longitude);
@@ -42,10 +43,11 @@ public class DatabaseManager {
         database.insert(DBOpenHelper.PLACE_TABLE, null, values);
 
     }
-    public void insertPlaceFavorite(String name, String place_id, float rating, String thumbnail, double longitude, double latitude ){
+    public void insertPlaceFavorite(String name, String place_id, float rating, String thumbnail, String address, double longitude, double latitude ){
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.COLUMN_NAME, name);
         values.put(DBOpenHelper.COLUMN_PLACE_ID, place_id);
+        values.put(DBOpenHelper.COLUMN_ADDRESS, address);
         values.put(DBOpenHelper.COLUMN_RATING, rating);
         values.put(DBOpenHelper.COLUMN_THUMBNAIL, thumbnail);
         values.put(DBOpenHelper.COLUMN_LONGITUDE, longitude);
@@ -73,6 +75,7 @@ public class DatabaseManager {
                         DBOpenHelper.COLUMN_ID,
                         DBOpenHelper.COLUMN_NAME,
                         DBOpenHelper.COLUMN_PLACE_ID,
+                        DBOpenHelper.COLUMN_ADDRESS,
                         DBOpenHelper.COLUMN_RATING,
                         DBOpenHelper.COLUMN_LONGITUDE,
                         DBOpenHelper.COLUMN_LATITUDE,
@@ -88,6 +91,8 @@ public class DatabaseManager {
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME)));
             place.setPlace_id(
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_PLACE_ID)));
+            place.setAddress(
+                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_ADDRESS)));
             place.setRating(
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_RATING)));
             place.setThumbnail(
@@ -211,6 +216,7 @@ public class DatabaseManager {
                         DBOpenHelper.COLUMN_ID,
                         DBOpenHelper.COLUMN_NAME,
                         DBOpenHelper.COLUMN_PLACE_ID,
+                        DBOpenHelper.COLUMN_ADDRESS,
                         DBOpenHelper.COLUMN_RATING,
                         DBOpenHelper.COLUMN_LONGITUDE,
                         DBOpenHelper.COLUMN_LATITUDE,
@@ -226,6 +232,8 @@ public class DatabaseManager {
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME)));
             place.setPlace_id(
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_PLACE_ID)));
+            place.setAddress(
+                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_ADDRESS)));
             place.setRating(
                     cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_RATING)));
             place.setThumbnail(
