@@ -8,4 +8,10 @@
     tools:context="com.example.guhao.mytrail.activity.DetailActivity"
     tools:showIn="@layout/activity_detail">
 
+    <TextView
+        android:id="@+id/test_tv"
+        android:layout_width="match_parent"
+        android:text="test"
+        android:layout_height="wrap_content" />
+
 </android.support.v4.widget.NestedScrollView>
