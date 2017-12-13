@@ -63,12 +63,7 @@ public class MainTrail extends AppCompatActivity
     private RecyclerView.LayoutManager mLayoutManager;
 
     //add G Map
-    private GoogleMap mMap;
 
-    GoogleApiClient mClient = null;
-    Location mLastLocation;
-    LocationRequest mLocationRequest;
-    Marker mCurrentLocationMarker;
     DownloadHelper downloadHelper;
     double longitude = -80.43301769999999, lat = 37.2432963;
     String activity = "hiking";
@@ -160,6 +155,8 @@ public class MainTrail extends AppCompatActivity
             public void onClick(View view) {
 
                 Intent intent = new Intent(MainTrail.this, MapView.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", lat);
                 //  intent.putExtra("place_id", temp.get(position).getPlace_id());
                 startActivity(intent);
 //                AlertDialog.Builder mDialog = new AlertDialog.Builder(MainTrail.this);
