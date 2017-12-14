@@ -9,11 +9,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,8 +35,9 @@ public class DetailActivity extends AppCompatActivity {
     private String place_id;
     private ResponseReceiver receiver;
     private AppBarLayout appbar;
+    private Toolbar toolbar;
     private DownloadHelper downloadHelper;
-    private ImageView test_iv;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +49,16 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         initView();
+        Intent intent = getIntent();
         if (getIntent() != null){
-            place_id = getIntent().getStringExtra("place_id");
+            place_id = intent.getStringExtra("place_id");
             Log.d("place_id_detail", "onCreate: " + place_id);
+            String name = intent.getStringExtra("name");
+//            toolbar.setTitle(name);
+            getSupportActionBar().setTitle(name);
+            Log.d("place_name", "initView: " + name);
         }
+
 
 
 
@@ -62,6 +72,14 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         startServiceBroadcaster();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void startServiceBroadcaster(){
@@ -79,11 +97,17 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void initView(){
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         appbar = findViewById(R.id.app_bar);
         test_tv = findViewById(R.id.test_tv);
 //        test_iv = findViewById(R.id.test_iv);
+        collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
 
     }
 
@@ -98,6 +122,9 @@ public class DetailActivity extends AppCompatActivity {
             Gson gson = new Gson();
             DetailPlace detailPlace = gson.fromJson(json, DetailPlace.class);
             Log.d("detail_activity", "onReceive: " + detailPlace.getStatus());
+
+//            String name = detailPlace.getResult().getName();
+//            toolbar.setTitle(name);
             changeBackgroundImage(detailPlace);
         }
     }
@@ -125,4 +152,9 @@ public class DetailActivity extends AppCompatActivity {
 //        Picasso.with(this).load(thumbnail_URL).into(test_iv);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
 }

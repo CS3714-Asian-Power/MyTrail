@@ -195,6 +195,7 @@ public class MainTrail extends AppCompatActivity
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainTrail.this, DetailActivity.class);
                 intent.putExtra("place_id", mAdapter.getPlace(position).getPlace_id());
+                intent.putExtra("name",mAdapter.getPlace(position).getName());
                 startActivity(intent);
             }
 
