@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -46,6 +47,7 @@ import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -53,7 +55,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainTrail extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, android.location.LocationListener {
 
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
@@ -69,7 +71,11 @@ public class MainTrail extends AppCompatActivity
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
     private FusedLocationProviderClient mFusedLocationClient;
 
+    private final static long LOCATION_REFRESH_TIME = 0;
+    private final static long LOCATION_REFRESH_DISTANCE = 0;
+
     DatabaseManager manager;
+    LocationManager locationManager;
 
     View view1;
 
@@ -96,6 +102,26 @@ public class MainTrail extends AppCompatActivity
         else {
             view1.setBackgroundColor(Color.WHITE);
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("location_change", "onLocationChanged: " + location.getLongitude() + location.getLatitude());
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 
     public void startServiceBroadcaster(){
@@ -138,23 +164,29 @@ public class MainTrail extends AppCompatActivity
     public void checkPermission(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkLocationPermission()){
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    double latitude = location.getLatitude();
-                                    double lon = location.getLongitude();
-//                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
-                                    longitude = lon;
-                                    lat = latitude;
-                                }
-                            }
-                        });
+//                mFusedLocationClient.getLastLocation()
+//                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                            @Override
+//                            public void onSuccess(Location location) {
+//                                // Got last known location. In some rare situations this can be null.
+//                                if (location != null) {
+//                                    // Logic to handle location object
+//                                    double latitude = location.getLatitude();
+//                                    double lon = location.getLongitude();
+////                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
+//                                    longitude = lon;
+//                                    lat = latitude;
+//                                }
+//                            }
+//                        });
+                Log.d("get_location", "checkPermission: ");
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,LOCATION_REFRESH_TIME,
+                        LOCATION_REFRESH_DISTANCE, this);
             }
         }
+
+
 
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayService()) {
