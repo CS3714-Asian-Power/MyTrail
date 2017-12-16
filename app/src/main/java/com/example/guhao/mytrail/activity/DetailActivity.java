@@ -58,6 +58,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private TextView ratings;
     private TextView address;
     private LinearLayout review_layout;
+    private int favoriteState = 0;
 
     private GoogleMap mMap;
     double longitude = -80.43301769999999, lat = 37.2432963;
@@ -94,12 +95,19 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             Log.d("place_name", "initView: " + name);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                if (favoriteState == 0) {
+                    fab.setImageResource(R.mipmap.ic_star_white_24dp);
+                    favoriteState = 1;
+                }else if (favoriteState == 1){
+                    fab.setImageResource(R.mipmap.ic_star_border_white_24dp);
+                    favoriteState = 0;
+                }
             }
         });
     }
