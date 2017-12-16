@@ -31,6 +31,7 @@ import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.DetailPlace;
 import com.example.guhao.mytrail.data.Weather;
+import com.example.guhao.mytrail.util.WeatherUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,6 +44,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,7 +59,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView ratings;
     private TextView address;
+    private LinearLayout weatherLayout;
     private LinearLayout review_layout;
+    private List<View> weatherList;
     private int favoriteState = 0;
 
     private GoogleMap mMap;
@@ -85,6 +89,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void initView(){
+        weatherList = new ArrayList<>();
         Intent intent = getIntent();
         if (getIntent() != null){
             place_id = intent.getStringExtra("place_id");
@@ -110,6 +115,12 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
         });
+
+        for (int i = 0; i < 5; i++){
+            View view = LayoutInflater.from(this).inflate(R.layout.layout_weather_view, null);
+            weatherList.add(view);
+            weatherLayout.addView(view);
+        }
     }
 
     @Override
@@ -144,6 +155,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         appbar = findViewById(R.id.app_bar);
+        weatherLayout = findViewById(R.id.weather_linearlayout);
         //ratingBar = findViewById(R.id.rating_bar);
 //        test_tv = findViewById(R.id.test_tv);
 //        test_iv = findViewById(R.id.test_iv);
@@ -154,9 +166,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-
-
 
     }
 
@@ -219,17 +228,29 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
                 }
 
-
                 setupReview(detailPlace);
-
                 changeBackgroundImage(detailPlace);
-
             }
             if (intent.getAction().equals(ACTION_WEATHER)){
                 String json = intent.getStringExtra("response");
                 Weather weather = gson.fromJson(json,Weather.class);
                 Log.d("get_weather", "onReceive: " + weather.getCity().getName());
-
+                List<Weather.ListBean> list = weather.getList();
+                for (int i = 0; i < list.size(); i++){
+                    View view = weatherList.get(i);
+                    TextView temp = view.findViewById(R.id.temperature);
+                    ImageView im = view.findViewById(R.id.weather_condition);
+                    double min = list.get(i).getTemp().getMin();
+                    double max = list.get(i).getTemp().getMax();
+                    min = WeatherUtil.fromK(min);
+                    max = WeatherUtil.fromK(max);
+                    int temp_id = list.get(i).getWeather().get(0).getId();
+                    Log.d("icon", "onReceive: " + temp_id);
+                    int icon_id = WeatherUtil.getWeatherID(temp_id);
+                    String t = (int)min + "˚F-" + (int)max + "˚F";
+                    temp.setText(t);
+                    Picasso.with(getApplicationContext()).load(icon_id).into(im);
+                }
             }
         }
     }
