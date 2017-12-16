@@ -24,7 +24,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        android:text="1000"
+        android:text="10"
         app:layout_constraintStart_toEndOf="@+id/siz"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:checked="true"
         android:text="Hiking"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activities" />
@@ -78,6 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:checked="true"
         android:text="Camping"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hiking" />

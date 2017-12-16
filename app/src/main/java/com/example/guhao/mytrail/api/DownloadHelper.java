@@ -15,8 +15,10 @@ import java.net.URL;
 
 public class DownloadHelper {
 //    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
-    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+//    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
 //    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
+    private static final String KEY_1 = "AIzaSyArtAouwEhQI2Ot_n2t9T_EydUSNMH0j-o";
+
 
 
     public String getResponses(String theUrl) throws IOException{
@@ -78,6 +80,11 @@ public class DownloadHelper {
         googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
+    }
+
+    //get weather URL
+    public String getUrlWeather(String lat, String lon){
+
     }
 
     //get detail of a place by place ID

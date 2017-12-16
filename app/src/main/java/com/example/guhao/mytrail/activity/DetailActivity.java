@@ -122,6 +122,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         msgIntent.setAction(GoogleAPIService.GET_DETAIL);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
         startService(msgIntent);
+
+
     }
 
     public void findView(){
@@ -237,7 +239,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     Log.d("get_image", "onBitmapLoaded: get image from picasso" );
                     BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-//                    drawable.setGravity(ImageView.ScaleType.FIT_START.ordinal());
+//                    drawable.setGravity(ImageView.ScaleType.CENTER_CROP.ordinal());
                     appbar.setBackground(drawable);
                 }
 

@@ -1,6 +1,5 @@
 package com.example.guhao.mytrail.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -17,7 +16,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -38,7 +36,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.adapter.MyAdapter;
@@ -50,27 +47,16 @@ import com.example.guhao.mytrail.database.DatabaseManager;
 import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
-import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
-import com.example.guhao.mytrail.adapter.MyAdapter;
-import com.example.guhao.mytrail.data.Place;
-import com.example.guhao.mytrail.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainTrail extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, android.location.LocationListener {
@@ -84,13 +70,15 @@ public class MainTrail extends AppCompatActivity
 
     DownloadHelper downloadHelper;
     double longitude = -80.43301769999999, lat = 37.2432963;
-    String activity = "hiking";
+    String activity = "hiking+camping";
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=99;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted;
+    private Map<String, Boolean> activityMap;
+    private int radius = 10;
 
     private final static long LOCATION_REFRESH_TIME = 0;
     private final static long LOCATION_REFRESH_DISTANCE = 0;
@@ -105,7 +93,11 @@ public class MainTrail extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        activityMap = new HashMap<>();
+        activityMap.put("hiking", true);
+        activityMap.put("camping", true);
+        activityMap.put("climbing", false);
+        activityMap.put("biking", false);
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
@@ -177,7 +169,7 @@ public class MainTrail extends AppCompatActivity
         registerReceiver(receiver, filter);
 
         downloadHelper = new DownloadHelper();
-        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,1000,activity);
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,radius,activity);
         Log.d("URl", the_url);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
@@ -197,6 +189,7 @@ public class MainTrail extends AppCompatActivity
 
     public void startFilterIntent(String activity, String radius) {
         int r = Integer.parseInt(radius);
+        this.radius = r;
         String the_url = downloadHelper.getUrlCoordinate(lat,longitude,r,activity);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
@@ -375,6 +368,14 @@ public class MainTrail extends AppCompatActivity
             final CheckBox cb_camping = dialogView.findViewById(R.id.camping);
             final CheckBox cb_trailing = dialogView.findViewById(R.id.climbing);
 
+            cb_hiking.setChecked(activityMap.get("hiking") == true);
+            cb_camping.setChecked(activityMap.get("camping") == true);
+            cb_biking.setChecked(activityMap.get("biking") == true);
+            cb_trailing.setChecked(activityMap.get("climbing") == true);
+
+
+            editText_radius.setText(radius+"");
+
             mDialog.setTitle(R.string.preference);
             mDialog.setView(dialogView);
             mDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -383,14 +384,28 @@ public class MainTrail extends AppCompatActivity
                     Log.d("dialog", "onClick: ok");
                     String r = editText_radius.getText().toString();
                     String a = "";
-                    if (cb_hiking.isChecked())
+                    if (cb_hiking.isChecked()) {
+                        activityMap.put("hiking", true);
                         a = a + "hiking+";
-                    if (cb_biking.isChecked())
+                    } else
+                        activityMap.put("hiking",false);
+                    if (cb_biking.isChecked()){
+                        activityMap.put("biking", true);
                         a = a + "biking+";
+                    } else
+                        activityMap.put("biking",false);
                     if (cb_camping.isChecked())
+                    {
+                        activityMap.put("camping", true);
                         a = a + "camping+";
+                    } else
+                        activityMap.put("camping",false);
                     if (cb_trailing.isChecked())
-                        a = a + "climbing";
+                    {
+                        activityMap.put("climbing", true);
+                        a = a + "climbing+";
+                    } else
+                        activityMap.put("climbing",false);
                     if (a.length() > 0) {
                         if (a.substring(a.length() - 1).equals("+"))
                             a = a.substring(0, a.length() - 1);

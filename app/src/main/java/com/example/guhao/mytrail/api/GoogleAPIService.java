@@ -32,6 +32,7 @@ public class GoogleAPIService extends IntentService {
     public static final String PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
     public static final String GET_RESULT = "get result";
     public static final String GET_DETAIL = "get detail";
+    public static final String GET_WEATHER = "get weather";
     public static final String ACTIVITY = "activity";
     public static final String RADIUS = "radius";
     public static final String LONGITUDE = "long";
@@ -101,6 +102,19 @@ public class GoogleAPIService extends IntentService {
                     }
 
                     //request things for detailed view
+                }else if (GET_WEATHER.equals(intent_action)){
+                    Log.d("Intent_Service", "onHandleIntent" + intent_action);
+                    String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
+                    DownloadHelper downloadHelper = new DownloadHelper();
+                    try{
+                        response = downloadHelper.getResponses(search_url);
+                        Log.d("Service", response.toString());
+                        DeliverWeather(SUCCESS_RESULT, response);
+                    } catch (Exception e){
+                        DeliverWeather(FAILURE_RESULT, e.toString());
+                        Log.d("Service Intent", e.toString());
+                    }
                 }
             }
 
@@ -183,6 +197,10 @@ public class GoogleAPIService extends IntentService {
         broadcastIntent.setAction(DetailActivity.ResponseReceiver.ACTION_RESP);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
+    }
+
+    private void DeliverWeather(int resultCode, String json){
+
     }
 
 }
