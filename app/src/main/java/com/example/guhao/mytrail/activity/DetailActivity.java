@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -122,6 +123,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             weatherList.add(view);
             weatherLayout.addView(view);
         }
+
+        appbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d("touch", "onTouch: ");
+                return false;
+            }
+        });
     }
 
     @Override
