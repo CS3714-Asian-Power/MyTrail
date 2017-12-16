@@ -16,6 +16,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ResultReceiver;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -46,11 +48,25 @@ import com.example.guhao.mytrail.database.DatabaseManager;
 import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
+import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
+import com.example.guhao.mytrail.adapter.MyAdapter;
+import com.example.guhao.mytrail.data.Place;
+import com.example.guhao.mytrail.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,6 +86,8 @@ public class MainTrail extends AppCompatActivity
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
     private FusedLocationProviderClient mFusedLocationClient;
+    private Location mLastKnownLocation;
+    private boolean mLocationPermissionGranted;
 
     private final static long LOCATION_REFRESH_TIME = 0;
     private final static long LOCATION_REFRESH_DISTANCE = 0;
@@ -85,6 +103,13 @@ public class MainTrail extends AppCompatActivity
         setContentView(R.layout.activity_main_trail);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         checkPermission();
+        getDeviceLocation();
+        if(mLocationPermissionGranted){
+            Log.d("Location: ", "granted");
+        }
+        else{
+            Log.d("Location: ", "denied");
+        }
         startServiceBroadcaster();
         initView();
 
@@ -197,6 +222,38 @@ public class MainTrail extends AppCompatActivity
             Log.d("onCreate","Google Play Services available.");
         }
     }
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            mLastKnownLocation = task.getResult();
+                           // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                             lat = mLastKnownLocation.getLatitude();
+                            longitude = mLastKnownLocation.getLongitude();
+
+                        } else {
+                            Log.d("Location: ", "Current location is null. Using defaults.");
+                            Log.e("location", "Exception: %s", task.getException());
+                           // mMap.moveCamera(CameraUpdateFactory
+                           //         .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                           // mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
 
     public void initView(){
         manager = new DatabaseManager(this);
@@ -210,6 +267,8 @@ public class MainTrail extends AppCompatActivity
             public void onClick(View view) {
 
                 Intent intent = new Intent(MainTrail.this, MapView.class);
+                Log.d("LAT ", "OnMap: " + lat);
+                Log.d("LONG  ", "onMap: " + longitude);
                 intent.putExtra("longitude", longitude);
                 intent.putExtra("latitude", lat);
                 //  intent.putExtra("place_id", temp.get(position).getPlace_id());
@@ -432,7 +491,7 @@ public class MainTrail extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("demoapp","Data is fetched");
+            Log.d("MyTrail","Data is fetched");
            // displayMovies(1, DBOpenHelper.COLUMN_NAME_RELEASE_DATE);
             Log.d("broadcast", "onReceive: " + "done");
 //            unregisterReceiver(receiver);

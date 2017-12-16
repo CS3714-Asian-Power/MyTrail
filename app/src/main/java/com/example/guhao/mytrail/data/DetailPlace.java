@@ -3,7 +3,7 @@ package com.example.guhao.mytrail.data;
 import java.util.List;
 
 /**
- * Created by DanielPham on 12/5/17.
+ * Created by Daniel Pham on 12/5/17.
  */
 
 public class DetailPlace {
