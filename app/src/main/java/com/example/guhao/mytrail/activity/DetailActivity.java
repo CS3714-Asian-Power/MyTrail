@@ -30,6 +30,7 @@ import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.DetailPlace;
+import com.example.guhao.mytrail.data.Weather;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,6 +50,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private TextView test_tv;
     private String place_id;
     private ResponseReceiver receiver;
+    private ResponseReceiver weatherReceiver;
     private AppBarLayout appbar;
     private Toolbar toolbar;
     private DownloadHelper downloadHelper;
@@ -116,13 +118,17 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         receiver = new ResponseReceiver();
         registerReceiver(receiver,filter);
 
+        IntentFilter filter2 = new IntentFilter(ResponseReceiver.ACTION_WEATHER);
+        filter2.addCategory(Intent.CATEGORY_DEFAULT);
+        weatherReceiver = new ResponseReceiver();
+        registerReceiver(weatherReceiver, filter2);
+
         downloadHelper = new DownloadHelper();
         String the_url = downloadHelper.getUrlPlaceDetail(place_id);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_DETAIL);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
         startService(msgIntent);
-
 
     }
 
@@ -167,40 +173,56 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     public class ResponseReceiver extends BroadcastReceiver {
         public static final String ACTION_RESP =
                 "Data_fetched";
+        public static final String ACTION_WEATHER = "get_weather";
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String json = intent.getStringExtra("response");
-
+            Log.d("intent_action", "onReceive: " + intent.getAction());
             Gson gson = new Gson();
-            DetailPlace detailPlace = gson.fromJson(json, DetailPlace.class);
-            Log.d("detail_activity", "onReceive: " + detailPlace.getStatus());
+            if (intent.getAction().equals(ACTION_RESP)) {
+                String json = intent.getStringExtra("response");
 
-            ratings.setText(detailPlace.getResult().getRating()+"");
-            address.setText(detailPlace.getResult().getFormatted_address());
-            longitude = detailPlace.getResult().getGeometry().getLocation().getLng();
-            lat = detailPlace.getResult().getGeometry().getLocation().getLat();
-           // mDefaultLocation = new LatLng(lat, longitude);
-            LatLng latLng = new LatLng(lat, longitude);
-            Log.d("Detail View:", lat + ","+longitude);
-            Log.d("Detail View:", "Detail Is ready");
-            if(mMap != null){
+                DetailPlace detailPlace = gson.fromJson(json, DetailPlace.class);
+                Log.d("detail_activity", "onReceive: " + detailPlace.getStatus());
+
+                DetailPlace.ResultBean.GeometryBean.LocationBean locationBean = detailPlace.getResult().getGeometry().getLocation();
+                String weather_url = downloadHelper.getUrlWeather(locationBean.getLat(), locationBean.getLng());
+                Intent msgIntent = new Intent(getApplicationContext(), GoogleAPIService.class);
+                msgIntent.setAction(GoogleAPIService.GET_WEATHER);
+                msgIntent.putExtra(GoogleAPIService.URL, weather_url);
+                startService(msgIntent);
+
+                ratings.setText(detailPlace.getResult().getRating() + "");
+                address.setText(detailPlace.getResult().getFormatted_address());
+                longitude = detailPlace.getResult().getGeometry().getLocation().getLng();
+                lat = detailPlace.getResult().getGeometry().getLocation().getLat();
+                // mDefaultLocation = new LatLng(lat, longitude);
+                LatLng latLng = new LatLng(lat, longitude);
+                Log.d("Detail View:", lat + "," + longitude);
                 Log.d("Detail View:", "Detail Is ready");
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                mMap.addMarker(markerOptions);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                if (mMap != null) {
+                    Log.d("Detail View:", "Detail Is ready");
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    mMap.addMarker(markerOptions);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                }
+
+
+                setupReview(detailPlace);
+
+                changeBackgroundImage(detailPlace);
+
             }
+            if (intent.getAction().equals(ACTION_WEATHER)){
+                String json = intent.getStringExtra("response");
+                Weather weather = gson.fromJson(json,Weather.class);
+                Log.d("get_weather", "onReceive: " + weather.getCity().getName());
 
-
-
-
-            setupReview(detailPlace);
-
-            changeBackgroundImage(detailPlace);
+            }
         }
     }
 

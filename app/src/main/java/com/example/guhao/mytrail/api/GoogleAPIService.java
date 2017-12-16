@@ -200,7 +200,12 @@ public class GoogleAPIService extends IntentService {
     }
 
     private void DeliverWeather(int resultCode, String json){
-
+        Log.d("weather_json", "DeliverWeather: " +json);
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.putExtra("response", json);
+        broadcastIntent.setAction(DetailActivity.ResponseReceiver.ACTION_WEATHER);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        sendBroadcast(broadcastIntent);
     }
 
 }
