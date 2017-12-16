@@ -6,6 +6,7 @@
     <!--<color name="colorAccent">#CDDC39</color>-->
 
     <color name="black">#424242</color>
+    <color name="realBlack">#000000</color>
 
     <color name="colorPrimary">#FF5722</color>
     <color name="colorPrimaryDark">#E64A19</color>

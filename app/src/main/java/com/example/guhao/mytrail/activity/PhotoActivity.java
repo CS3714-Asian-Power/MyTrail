@@ -1,16 +1,31 @@
 package com.example.guhao.mytrail.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.guhao.mytrail.R;
+import com.example.guhao.mytrail.api.DownloadHelper;
+import com.example.guhao.mytrail.data.DetailPlace;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -22,7 +37,8 @@ public class PhotoActivity extends AppCompatActivity {
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
     private static final boolean AUTO_HIDE = true;
-
+    private CustomPagerAdapter mCustomPagerAdapter;
+    private ViewPager mViewPager;
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
@@ -34,6 +50,8 @@ public class PhotoActivity extends AppCompatActivity {
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
+
+    private List<String> references;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -54,6 +72,7 @@ public class PhotoActivity extends AppCompatActivity {
         }
     };
     private View mControlsView;
+
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -107,6 +126,18 @@ public class PhotoActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
+        references = new ArrayList<>();
+        DetailPlace place;
+        DownloadHelper helper = new DownloadHelper();
+        if (getIntent() != null){
+            place = new Gson().fromJson(getIntent().getStringExtra("json"), DetailPlace.class);
+            List<DetailPlace.ResultBean.PhotosBean> bean = place.getResult().getPhotos();
+            for (int i = 0; i < bean.size(); i++){
+                String reference = bean.get(i).getPhoto_reference();
+                references.add(helper.getPhotoURL(2000,reference));
+            }
+        }
+
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +148,10 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
 
+        mCustomPagerAdapter = new CustomPagerAdapter(this);
+
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.setAdapter(mCustomPagerAdapter);
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
@@ -177,5 +212,43 @@ public class PhotoActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    class CustomPagerAdapter extends PagerAdapter {
+
+        Context mContext;
+        LayoutInflater mLayoutInflater;
+
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return references.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view ==  object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
+
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.full_imageview);
+//            imageView.setImageResource(mResources[position]);
+            Picasso.with(mContext).load(references.get(position)).into(imageView);
+            container.addView(itemView);
+
+            return itemView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
     }
 }
