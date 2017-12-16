@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+//import com.bumptech.glide.Glide;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.R;
@@ -72,6 +73,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
             String thumbnail_URL = helper.getPhotoURL(1200, places.get(position).getThumbnail());
             Picasso picasso = Picasso.with(context);
             picasso.load(thumbnail_URL).into(holder.thumbnail);
+//            Glide.with(context).load(thumbnail_URL).into(holder.thumbnail);
 
         }
         holder.ratingBar.setRating((float) Double.parseDouble(places.get(position).getRating()));

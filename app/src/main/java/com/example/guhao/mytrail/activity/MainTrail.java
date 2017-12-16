@@ -230,16 +230,20 @@ public class MainTrail extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
+                            Log.d("successful", "onComplete: ");
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
+//                            Log.d("successful", "onComplete: " + mLastKnownLocation.getLongitude() + mLastKnownLocation.getLatitude());
+
                             try {
                                 longitude = mLastKnownLocation.getLongitude();
                                 lat = mLastKnownLocation.getLatitude();
+
                             }catch (Exception e){
                                 Log.d("error", e.toString());
                             }
                         } else {
-                            Log.d("Device Location", "Current location is null. Using defaults.");
+                            Log.d("Device_Location", "Current location is null. Using defaults.");
                             Log.e("Device Location", "Exception: %s", task.getException());
                             longitude = -80.43301769999999;
                             lat = 37.2432963;
@@ -256,10 +260,10 @@ public class MainTrail extends AppCompatActivity
     public void initView(){
         manager = new DatabaseManager(this);
         manager.open();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,7 +278,7 @@ public class MainTrail extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);

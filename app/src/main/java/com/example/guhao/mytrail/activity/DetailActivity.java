@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -204,21 +205,23 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     public void setupReview(DetailPlace place){
 
         List<DetailPlace.ResultBean.ReviewsBean> reviews = place.getResult().getReviews();
-        for (DetailPlace.ResultBean.ReviewsBean review: reviews){
-            View view = LayoutInflater.from(this).inflate(R.layout.layout_detail_review, null);
-            TextView name = view.findViewById(R.id.reviewer);
-            RatingBar ratingBar = view.findViewById(R.id.rating);
-            TextView time = view.findViewById(R.id.review_time);
-            TextView review_content = view.findViewById(R.id.layout_detail_review_review);
-            TextView rating = view.findViewById(R.id.layout_detail_review_rating);
-            name.setText(review.getAuthor_name());
-            time.setText(review.getRelative_time_description());
-            //do not show if there is no text
-            review_content.setText(review.getText());
-            Log.d("review", "setupReview: " + review.getRating());
-            ratingBar.setRating(review.getRating());
-            rating.setText(review.getRating()+"");
-            review_layout.addView(view);
+        if (reviews != null) {
+            for (DetailPlace.ResultBean.ReviewsBean review : reviews) {
+                View view = LayoutInflater.from(this).inflate(R.layout.layout_detail_review, null);
+                TextView name = view.findViewById(R.id.reviewer);
+                RatingBar ratingBar = view.findViewById(R.id.rating);
+                TextView time = view.findViewById(R.id.review_time);
+                TextView review_content = view.findViewById(R.id.layout_detail_review_review);
+                TextView rating = view.findViewById(R.id.layout_detail_review_rating);
+                name.setText(review.getAuthor_name());
+                time.setText(review.getRelative_time_description());
+                //do not show if there is no text
+                review_content.setText(review.getText());
+                Log.d("review", "setupReview: " + review.getRating());
+                ratingBar.setRating(review.getRating());
+                rating.setText(review.getRating() + "");
+                review_layout.addView(view);
+            }
         }
     }
 
@@ -227,25 +230,30 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             Log.d("background_image", "changeBackgroundImage: ");
             String thumbnail_URL = downloadHelper.getPhotoURL(800, place.getResult().getPhotos().get(0).getPhoto_reference());
             Log.d("photo_url", "changeBackgroundImage: " + thumbnail_URL);
-            Picasso.with(this).load(thumbnail_URL).into(new Target() {
+//            Picasso.with(this).setLoggingEnabled(true);
+
+            Target target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     Log.d("get_image", "onBitmapLoaded: get image from picasso" );
                     BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-                    drawable.setGravity(BaseSliderView.ScaleType.FitCenterCrop.ordinal());
+//                    drawable.setGravity(ImageView.ScaleType.FIT_START.ordinal());
                     appbar.setBackground(drawable);
                 }
 
                 @Override
                 public void onBitmapFailed(Drawable errorDrawable) {
-
+                    Log.d("get_image", "onBitmapFailed: ");
                 }
 
                 @Override
                 public void onPrepareLoad(Drawable placeHolderDrawable) {
 
                 }
-            });
+            };
+            appbar.setTag(target);
+//            final ImageView imageView = new ImageView(this);
+            Picasso.with(this).load(thumbnail_URL).into(target);
         }
 //        Picasso.with(this).load(thumbnail_URL).into(test_iv);
     }
