@@ -224,11 +224,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     public void changeBackgroundImage(DetailPlace place){
         if (place.getResult().getPhotos()!= null) {
-            String thumbnail_URL = downloadHelper.getPhotoURL(1200, place.getResult().getPhotos().get(0).getPhoto_reference());
+            Log.d("background_image", "changeBackgroundImage: ");
+            String thumbnail_URL = downloadHelper.getPhotoURL(800, place.getResult().getPhotos().get(0).getPhoto_reference());
             Log.d("photo_url", "changeBackgroundImage: " + thumbnail_URL);
             Picasso.with(this).load(thumbnail_URL).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    Log.d("get_image", "onBitmapLoaded: get image from picasso" );
                     BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
                     drawable.setGravity(BaseSliderView.ScaleType.FitCenterCrop.ordinal());
                     appbar.setBackground(drawable);
