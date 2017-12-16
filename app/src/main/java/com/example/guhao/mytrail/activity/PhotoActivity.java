@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -111,6 +112,7 @@ public class PhotoActivity extends AppCompatActivity {
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("mcontent", "onClick: ");
                 toggle();
             }
         });
@@ -133,8 +135,10 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void toggle() {
         if (mVisible) {
+            Log.d("mvisible", "toggle: to hide");
             hide();
         } else {
+            Log.d("mvisible", "toggle: to show");
             show();
         }
     }
@@ -145,6 +149,7 @@ public class PhotoActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
+
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
 

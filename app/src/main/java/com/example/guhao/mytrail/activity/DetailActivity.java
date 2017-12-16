@@ -260,10 +260,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     double max = list.get(i).getTemp().getMax();
                     min = WeatherUtil.fromK(min);
                     max = WeatherUtil.fromK(max);
+                    if (i == 0){
+                        weekday.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    }
                     int temp_id = list.get(i).getWeather().get(0).getId();
                     Log.d("icon", "onReceive: " + temp_id);
                     int icon_id = WeatherUtil.getWeatherID(temp_id);
-                    String t = (int)min + "˚ - " + (int)max + "˚";
+                    String t = (int)min + "˚- " + (int)max + "˚";
                     temp.setText(t);
                     weekday.setText(WeatherUtil.getWeekDay((day+i)%7));
                     Picasso.with(getApplicationContext()).load(icon_id).into(im);
