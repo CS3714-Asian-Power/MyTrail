@@ -14,8 +14,8 @@ import java.net.URL;
  */
 
 public class DownloadHelper {
-    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
-//    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+   // private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
+    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
 //    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
 
 
@@ -93,6 +93,14 @@ public class DownloadHelper {
         googlePlacesUrl.append(maxWidth);
         googlePlacesUrl.append("&photoreference=" + photoID);
         googlePlacesUrl.append("&key=" + KEY_1);
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
+
+    }
+
+    public String getLatLngURL (String address){
+        StringBuilder googlePlacesUrl = new StringBuilder("http://maps.googleapis.com/maps/api/geocode/json?address=");
+        googlePlacesUrl.append(address);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
