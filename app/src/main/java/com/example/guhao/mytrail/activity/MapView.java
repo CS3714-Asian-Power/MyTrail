@@ -181,17 +181,17 @@ public class MapView extends AppCompatActivity implements OnMapReadyCallback {
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
                                     mLastKnownLocation = location;
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                            new LatLng(mLastKnownLocation.getLatitude(),
-                                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                 //   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                     //       new LatLng(mLastKnownLocation.getLatitude(),
+                                      //              mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
                                 }
                                 else{
                                     Log.d(TAG, "Current location is null. Using defaults.");
                                    // Log.e(TAG, "Exception: %s", task.getException());
-                                    mMap.moveCamera(CameraUpdateFactory
-                                            .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                  //  mMap.moveCamera(CameraUpdateFactory
+                                   //         .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                  //  mMap.getUiSettings().setMyLocationButtonEnabled(false);
                                 }
                             }
                         });
