@@ -45,6 +45,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -236,10 +237,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 Weather weather = gson.fromJson(json,Weather.class);
                 Log.d("get_weather", "onReceive: " + weather.getCity().getName());
                 List<Weather.ListBean> list = weather.getList();
+                Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_WEEK);
+                Log.d("weekofday", "onReceive: " + day);
                 for (int i = 0; i < list.size(); i++){
                     View view = weatherList.get(i);
                     TextView temp = view.findViewById(R.id.temperature);
                     ImageView im = view.findViewById(R.id.weather_condition);
+                    TextView weekday = view.findViewById(R.id.weekday);
                     double min = list.get(i).getTemp().getMin();
                     double max = list.get(i).getTemp().getMax();
                     min = WeatherUtil.fromK(min);
@@ -249,6 +254,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     int icon_id = WeatherUtil.getWeatherID(temp_id);
                     String t = (int)min + "˚F-" + (int)max + "˚F";
                     temp.setText(t);
+                    weekday.setText(WeatherUtil.getWeekDay((day+i)%7));
                     Picasso.with(getApplicationContext()).load(icon_id).into(im);
                 }
             }

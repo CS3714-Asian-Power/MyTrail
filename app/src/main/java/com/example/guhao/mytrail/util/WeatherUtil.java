@@ -53,20 +53,20 @@ public class WeatherUtil {
         return f;
     }
 
-    public String getWeekDay(int i){
-        if (i == 1)
-            return "Mon";
+    public static String getWeekDay(int i){
         if (i == 2)
-            return "Tue";
+            return "Mon";
         if (i == 3)
-            return "Wed";
+            return "Tue";
         if (i == 4)
-            return "Thu";
+            return "Wed";
         if (i == 5)
-            return "Fri";
+            return "Thu";
         if (i == 6)
+            return "Fri";
+        if (i == 0)
             return "Sat";
-        if (i == 7)
+        if (i == 1)
             return "Sun";
         return null;
     }
