@@ -1,5 +1,6 @@
 package com.example.guhao.mytrail.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -37,6 +38,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.adapter.MyAdapter;
@@ -84,7 +86,8 @@ public class MainTrail extends AppCompatActivity
     double longitude = -80.43301769999999, lat = 37.2432963;
     String activity = "hiking";
     private ResponseReceiver receiver;
-    private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
+    private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=99;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted;
@@ -102,8 +105,24 @@ public class MainTrail extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_trail);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        checkPermission();
+
+        if (!CheckGooglePlayServices()) {
+            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
+            finish();
+        }
+        else {
+            Log.d("onCreate","Google Play Services available.");
+        }
+
+        getLocationPermission();
+
+        // Turn on the My Location layer and the related control on the map.
+        //updateLocationUI();
+
+        // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+      //  checkLocationPermission();
+      //  getDeviceLocation();
         if(mLocationPermissionGranted){
             Log.d("Location: ", "granted");
         }
@@ -185,43 +204,20 @@ public class MainTrail extends AppCompatActivity
         startService(msgIntent);
     }
 
-
-    public void checkPermission(){
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkLocationPermission()){
-//                mFusedLocationClient.getLastLocation()
-//                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                            @Override
-//                            public void onSuccess(Location location) {
-//                                // Got last known location. In some rare situations this can be null.
-//                                if (location != null) {
-//                                    // Logic to handle location object
-//                                    double latitude = location.getLatitude();
-//                                    double lon = location.getLongitude();
-////                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
-//                                    longitude = lon;
-//                                    lat = latitude;
-//                                }
-//                            }
-//                        });
-                Log.d("get_location", "checkPermission: ");
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,LOCATION_REFRESH_TIME,
-                        LOCATION_REFRESH_DISTANCE, this);
+    private boolean CheckGooglePlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result,
+                        0).show();
             }
+            return false;
         }
-
-
-
-        //Check if Google Play Services Available or not
-        if (!CheckGooglePlayService()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
-            finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-        }
+        return true;
     }
+
+
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -236,16 +232,17 @@ public class MainTrail extends AppCompatActivity
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
-                           // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                             lat = mLastKnownLocation.getLatitude();
-                            longitude = mLastKnownLocation.getLongitude();
-
+                            try {
+                                longitude = mLastKnownLocation.getLongitude();
+                                lat = mLastKnownLocation.getLatitude();
+                            }catch (Exception e){
+                                Log.d("error", e.toString());
+                            }
                         } else {
-                            Log.d("Location: ", "Current location is null. Using defaults.");
-                            Log.e("location", "Exception: %s", task.getException());
-                           // mMap.moveCamera(CameraUpdateFactory
-                           //         .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                           // mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            Log.d("Device Location", "Current location is null. Using defaults.");
+                            Log.e("Device Location", "Exception: %s", task.getException());
+                            longitude = -80.43301769999999;
+                            lat = 37.2432963;
                         }
                     }
                 });
@@ -254,6 +251,7 @@ public class MainTrail extends AppCompatActivity
             Log.e("Exception: %s", e.getMessage());
         }
     }
+
 
     public void initView(){
         manager = new DatabaseManager(this);
@@ -442,49 +440,39 @@ public class MainTrail extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private boolean CheckGooglePlayService(){
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(this);
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(this, result,
-                        0).show();
-            }
-            return false;
-        }
-        return true;
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+            }
+        }
     }
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Asking user if explanation is needed
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSION_ACCESS_COURSE_LOCATION);
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSION_ACCESS_COURSE_LOCATION);
-            }
-            return false;
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
         } else {
-            return true;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
     public class ResponseReceiver extends BroadcastReceiver{
         public static final String ACTION_RESP =
                 "Data_fetched";
