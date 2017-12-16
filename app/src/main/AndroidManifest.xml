@@ -20,16 +20,17 @@
             android:name=".activity.MainTrail"
             android:label="@string/title_activity_main_trail"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".activity.DetailActivity"
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -38,7 +39,15 @@
             android:name=".api.GoogleAPIService"
             android:enabled="true" />
 
-        <activity android:name=".activity.MapView"></activity>
+        <activity android:name=".activity.MapView" />
+        <activity android:name=".activity.About">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.Setting"></activity>
     </application>
 
 </manifest>
