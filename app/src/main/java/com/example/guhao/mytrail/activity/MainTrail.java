@@ -92,10 +92,11 @@ public class MainTrail extends AppCompatActivity
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted;
     private Map<String, Boolean> activityMap;
-    private int radius = 16000;
+    private int radius = 10;
 
     private final static long LOCATION_REFRESH_TIME = 0;
     private final static long LOCATION_REFRESH_DISTANCE = 0;
+    private final static double MILE_TO_METER = 1609.344;
 
     DatabaseManager manager;
     LocationManager locationManager;
@@ -187,8 +188,9 @@ public class MainTrail extends AppCompatActivity
         registerReceiver(receiver, filter);
 
         downloadHelper = new DownloadHelper();
-        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,radius,activity);
-        Log.d("URl", the_url);
+        double m = radius * MILE_TO_METER;
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,(int)m,activity);
+        Log.d("URl_main", the_url);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
@@ -196,8 +198,8 @@ public class MainTrail extends AppCompatActivity
     }
 
     public void startCityIntent(String city){
-
-        String new_url = downloadHelper.getUrlCityName(city,1000,activity);
+        double m = radius * MILE_TO_METER;
+        String new_url = downloadHelper.getUrlCityName(city,(int)m,activity);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, new_url);
