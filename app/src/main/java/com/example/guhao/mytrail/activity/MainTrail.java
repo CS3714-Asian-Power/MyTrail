@@ -16,6 +16,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -39,8 +41,10 @@ import android.widget.SearchView;
 
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.adapter.MyAdapter;
+import com.example.guhao.mytrail.api.AddressService;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
+import com.example.guhao.mytrail.data.Constants;
 import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.database.DBOpenHelper;
 import com.example.guhao.mytrail.database.DatabaseManager;
@@ -48,12 +52,21 @@ import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.HashMap;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,6 +77,7 @@ public class MainTrail extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private AddressResultReceiver mResultReceiver;
     private MenuItem filterItem;
 
     //add G Map
@@ -123,6 +137,8 @@ public class MainTrail extends AppCompatActivity
         }
         startServiceBroadcaster();
         initView();
+        mResultReceiver = new AddressResultReceiver(new Handler());
+        AddressIntentService(longitude, lat);
 
         view1 = this.getWindow().getDecorView();
         SharedPreferences setting = getSharedPreferences("Background", Context.MODE_PRIVATE);
@@ -186,6 +202,28 @@ public class MainTrail extends AppCompatActivity
         startService(msgIntent);
 
     }
+    public void startGetLatLngIntent(String address){
+
+        String new_url = downloadHelper.getLatLngURL(address);
+        Intent msgIntent = new Intent(this, GoogleAPIService.class);
+        msgIntent.setAction(GoogleAPIService.GET_LATLONG);
+        msgIntent.putExtra(GoogleAPIService.URL, new_url);
+        msgIntent.putExtra(GoogleAPIService.RECEIVER, mResultReceiver);
+        startService(msgIntent);
+
+    }
+    private void AddressIntentService(double lng, double lat) {
+        // Create an intent for passing to the intent service responsible for fetching the address.
+        Log.d("IntentService","call address");
+        Intent intent = new Intent(this, GoogleAPIService.class);
+        intent.setAction(GoogleAPIService.GET_ADDRESS);
+        intent.putExtra(GoogleAPIService.LONGITUDE, lng);
+        intent.putExtra(GoogleAPIService.LATITUDE, lat);
+        // Pass the result receiver as an extra to the service.
+        intent.putExtra(GoogleAPIService.RECEIVER, mResultReceiver);
+        startService(intent);
+    }
+
 
     public void startFilterIntent(String activity, String radius) {
         int r = Integer.parseInt(radius);
@@ -341,6 +379,8 @@ public class MainTrail extends AppCompatActivity
                 // **Here you can get the value "query" which is entered in the search box.**
 
 //                Toast.makeText(getApplicationContext(),"searchvalue :"+query,Toast.LENGTH_LONG).show();
+                startGetLatLngIntent(query);
+
                 startCityIntent(query);
                 return true;
             }
@@ -349,6 +389,7 @@ public class MainTrail extends AppCompatActivity
 
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -517,10 +558,41 @@ public class MainTrail extends AppCompatActivity
             mRecyclerView.setAdapter(mAdapter);
         }
     }
+    private class AddressResultReceiver extends ResultReceiver {
+        AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        /**
+         *  Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
+         */
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string or an error message sent from the intent service.
+            Log.d("address","found address:"+resultData.getString(GoogleAPIService.RETURN_ADDRESS));
+
+            // Show a toast message if an address was found.
+            if (resultCode == GoogleAPIService.SUCCESS_RESULT) {
+                longitude = resultData.getDouble(GoogleAPIService.LONGITUDE);
+                lat = resultData.getDouble(GoogleAPIService.LATITUDE);
+                Log.d("address",lat + ","+ longitude);
+            }
+            if (resultCode == GoogleAPIService.SUCCESS_ADDRESS) {
+                String Adresss = resultData.getString(GoogleAPIService.RETURN_ADDRESS);
+
+            }
+
+
+        }
+    }
+
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mResultReceiver = null;
         unregisterReceiver(receiver);
     }
 

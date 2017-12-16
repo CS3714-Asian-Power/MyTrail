@@ -108,5 +108,13 @@ public class DownloadHelper {
         googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
+
+    }
+
+    public String getLatLngURL (String address){
+        StringBuilder googlePlacesUrl = new StringBuilder("http://maps.googleapis.com/maps/api/geocode/json?address=");
+        googlePlacesUrl.append(address);
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
     }
 }
