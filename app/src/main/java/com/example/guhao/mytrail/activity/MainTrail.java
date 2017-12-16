@@ -2,46 +2,49 @@ package com.example.guhao.mytrail.activity;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.BroadcastReceiver;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.Toast;
 
+import com.example.guhao.mytrail.R;
+import com.example.guhao.mytrail.adapter.MyAdapter;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
+import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.database.DBOpenHelper;
 import com.example.guhao.mytrail.database.DatabaseManager;
+import com.example.guhao.mytrail.listener.RecyclerItemClickListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -86,6 +89,8 @@ public class MainTrail extends AppCompatActivity
 
     DatabaseManager manager;
 
+    View view1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +106,21 @@ public class MainTrail extends AppCompatActivity
         }
         startServiceBroadcaster();
         initView();
+
+        view1 = this.getWindow().getDecorView();
+        SharedPreferences setting = getSharedPreferences("Background", Context.MODE_PRIVATE);
+        if (setting.getInt("background", Color.WHITE) == Color.BLACK) {
+            view1.setBackgroundColor(Color.BLACK);
+        }
+        else if (setting.getInt("background", Color.WHITE) == Color.GREEN) {
+            view1.setBackgroundColor(Color.GREEN);
+        }
+        else if (setting.getInt("background", Color.WHITE) == Color.BLUE) {
+            view1.setBackgroundColor(Color.BLUE);
+        }
+        else {
+            view1.setBackgroundColor(Color.WHITE);
+        }
     }
 
     public void startServiceBroadcaster(){
@@ -408,7 +428,6 @@ public class MainTrail extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
 
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -447,7 +466,6 @@ public class MainTrail extends AppCompatActivity
 //            unregisterReceiver(receiver);
             List<Place> temp;
             temp = manager.getAllRecords(DBOpenHelper.RESULT_TABLE_ID);
-          //  manager.close();
 
          //   Log.d("Place List", temp.get(0).getName());
             Log.d("broadcast", "onReceive: " + temp.size());
