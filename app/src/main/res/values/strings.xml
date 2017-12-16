@@ -104,11 +104,15 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
 
-    <string-array name= "color">
+    <string-array name="color">
         <item>Default</item>
         <item>Black</item>
         <item>Green</item>
         <item>Blue</item>
     </string-array>
+
+    <string name="title_activity_photo">PhotoActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

@@ -40,10 +40,13 @@
             android:enabled="true" />
 
         <activity android:name=".activity.MapView" />
-        <activity android:name=".activity.About">
-
-        </activity>
-        <activity android:name=".activity.Setting"></activity>
+        <activity android:name=".activity.About"></activity>
+        <activity android:name=".activity.Setting" />
+        <activity
+            android:name=".activity.PhotoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_photo"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

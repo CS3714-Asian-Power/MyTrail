@@ -4,7 +4,7 @@
     <!--<color name="colorPrimaryDark">#388E3C</color>-->
     <!--<color name="colorPirmaryList">#C8E6C9</color>-->
     <!--<color name="colorAccent">#CDDC39</color>-->
-    
+
     <color name="black">#424242</color>
 
     <color name="colorPrimary">#FF5722</color>
@@ -30,4 +30,6 @@
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="duskYellow">#f5c800</color>
     <color name="lightGrey">#646464</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

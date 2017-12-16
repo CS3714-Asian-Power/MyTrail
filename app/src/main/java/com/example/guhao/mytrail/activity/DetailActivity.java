@@ -128,6 +128,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 Log.d("touch", "onTouch: ");
+                Intent intent = new Intent(DetailActivity.this, PhotoActivity.class);
+                startActivity(intent);
                 return false;
             }
         });
