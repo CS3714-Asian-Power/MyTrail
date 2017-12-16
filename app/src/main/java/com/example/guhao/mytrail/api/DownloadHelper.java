@@ -15,9 +15,9 @@ import java.net.URL;
 
 public class DownloadHelper {
 //    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
-//    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
-    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
-//    private static final String KEY_1 = "AIzaSyArtAouwEhQI2Ot_n2t9T_EydUSNMH0j-o";
+    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+   // private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
+  //  private static final String KEY_1 = "AIzaSyArtAouwEhQI2Ot_n2t9T_EydUSNMH0j-o";
     private static final String WEATHER_KEY = "5aa5b38d6ea0410fca7440355dbb0900";
 
 

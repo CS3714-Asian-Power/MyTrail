@@ -131,8 +131,8 @@ public class MapView extends AppCompatActivity implements OnMapReadyCallback {
                 mMap.addMarker(markerOptions);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+               // mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                //mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
             }
         }
 
@@ -165,6 +165,9 @@ public class MapView extends AppCompatActivity implements OnMapReadyCallback {
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
         ShowNearbyPlace();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                       new LatLng(latitude,
+                             longitude), DEFAULT_ZOOM));
 
     }
     private void getDeviceLocation() {
