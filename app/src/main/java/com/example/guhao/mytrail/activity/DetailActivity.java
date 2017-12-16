@@ -263,7 +263,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     int temp_id = list.get(i).getWeather().get(0).getId();
                     Log.d("icon", "onReceive: " + temp_id);
                     int icon_id = WeatherUtil.getWeatherID(temp_id);
-                    String t = (int)min + "˚F-" + (int)max + "˚F";
+                    String t = (int)min + "˚ - " + (int)max + "˚";
                     temp.setText(t);
                     weekday.setText(WeatherUtil.getWeekDay((day+i)%7));
                     Picasso.with(getApplicationContext()).load(icon_id).into(im);
