@@ -5,13 +5,31 @@
     <!--<color name="colorPirmaryList">#C8E6C9</color>-->
     <!--<color name="colorAccent">#CDDC39</color>-->
 
+    <color name="colorPrimary">#0d0c0c</color>
+    <color name="colorPrimaryDark">#090600</color>
+    <color name="colorPirmaryLight">#FFCCBC</color>
+    <color name="colorAccent">#130c02</color>
     <!--<color name="colorPrimary">#FF5722</color>-->
     <!--<color name="colorPrimaryDark">#E64A19</color>-->
     <!--<color name="colorPirmaryLight">#FFCCBC</color>-->
     <!--<color name="colorAccent">#FF9800</color>-->
+    <item name="Yellow" type="color">#f5c800</item>
+    <item name="lightGray" type="color">#646464</item>
+    <integer-array name="androidcolors">
+        <item>@color/Yellow</item>
+        <item>@color/lightGray</item>
+    </integer-array>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorPirmaryLight">#C5CAE9</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorPirmaryLight">#C5CAE9</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="duskYellow">#f5c800</color>
+    <color name="lightGrey">#646464</color>
+    <color name="primary_material_light">#04ed0d</color>
+    <color name="primary_dark_material_light">#54f20b</color>
+    <color name="accent_material_light">#56f05c</color>
+    <color name="accent_material_dark">#050505</color>
+    <color name="primary_material_dark">#061ea6</color>
+    <color name="primary_dark_material_dark">#457aed</color>
 </resources>

@@ -19,14 +19,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.DetailPlace;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -34,7 +42,7 @@ import com.squareup.picasso.Target;
 import java.util.List;
 
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback{
     private TextView test_tv;
     private String place_id;
     private ResponseReceiver receiver;
@@ -45,6 +53,12 @@ public class DetailActivity extends AppCompatActivity {
     private TextView ratings;
     private TextView address;
     private LinearLayout review_layout;
+
+    private GoogleMap mMap;
+    double longitude = -80.43301769999999, lat = 37.2432963;
+    private LatLng mDefaultLocation = new LatLng(37.18482189999999, -80.3763869);
+    private static final int DEFAULT_ZOOM = 15;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +71,9 @@ public class DetailActivity extends AppCompatActivity {
 
         findView();
         initView();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         startServiceBroadcaster();
     }
@@ -108,6 +125,7 @@ public class DetailActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         appbar = findViewById(R.id.app_bar);
+        //ratingBar = findViewById(R.id.rating_bar);
 //        test_tv = findViewById(R.id.test_tv);
 //        test_iv = findViewById(R.id.test_iv);
         ratings = findViewById(R.id.detail_rating);
@@ -119,6 +137,25 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
 
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.moveCamera(CameraUpdateFactory
+                .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(mDefaultLocation);
+//        markerOptions.title(mDefaultLocation.latitude + " : " + mDefaultLocation.longitude);
+//        mMap.addMarker(markerOptions);
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+//        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(mDefaultLocation));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        Log.d("Detail View:", "Map Is ready");
 
     }
 
@@ -136,6 +173,25 @@ public class DetailActivity extends AppCompatActivity {
 
             ratings.setText(detailPlace.getResult().getRating()+"");
             address.setText(detailPlace.getResult().getFormatted_address());
+            longitude = detailPlace.getResult().getGeometry().getLocation().getLng();
+            lat = detailPlace.getResult().getGeometry().getLocation().getLat();
+           // mDefaultLocation = new LatLng(lat, longitude);
+            LatLng latLng = new LatLng(lat, longitude);
+            Log.d("Detail View:", lat + ","+longitude);
+            Log.d("Detail View:", "Detail Is ready");
+            if(mMap != null){
+                Log.d("Detail View:", "Detail Is ready");
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                mMap.addMarker(markerOptions);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                //move map camera
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+            }
+
+
+
 
             setupReview(detailPlace);
 
@@ -149,6 +205,7 @@ public class DetailActivity extends AppCompatActivity {
         for (DetailPlace.ResultBean.ReviewsBean review: reviews){
             View view = LayoutInflater.from(this).inflate(R.layout.layout_detail_review, null);
             TextView name = view.findViewById(R.id.reviewer);
+            RatingBar ratingBar = view.findViewById(R.id.rating);
             TextView time = view.findViewById(R.id.review_time);
             TextView review_content = view.findViewById(R.id.layout_detail_review_review);
             TextView rating = view.findViewById(R.id.layout_detail_review_rating);
@@ -157,6 +214,7 @@ public class DetailActivity extends AppCompatActivity {
             //do not show if there is no text
             review_content.setText(review.getText());
             Log.d("review", "setupReview: " + review.getRating());
+            ratingBar.setRating(review.getRating());
             rating.setText(review.getRating()+"");
             review_layout.addView(view);
         }
@@ -164,12 +222,14 @@ public class DetailActivity extends AppCompatActivity {
 
     public void changeBackgroundImage(DetailPlace place){
         if (place.getResult().getPhotos()!= null) {
-            String thumbnail_URL = downloadHelper.getPhotoURL(400, place.getResult().getPhotos().get(0).getPhoto_reference());
+            String thumbnail_URL = downloadHelper.getPhotoURL(1200, place.getResult().getPhotos().get(0).getPhoto_reference());
             Log.d("photo_url", "changeBackgroundImage: " + thumbnail_URL);
             Picasso.with(this).load(thumbnail_URL).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    appbar.setBackground(new BitmapDrawable(getResources(), bitmap));
+                    BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+                    drawable.setGravity(BaseSliderView.ScaleType.FitCenterCrop.ordinal());
+                    appbar.setBackground(drawable);
                 }
 
                 @Override

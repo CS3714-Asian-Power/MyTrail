@@ -7,14 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -47,18 +47,21 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 import java.util.Locale;
 
 public class MainTrail extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, android.location.LocationListener {
 
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private MenuItem filterItem;
+
+    private NavigationView navigationView;
 
     //add G Map
 
@@ -68,34 +71,81 @@ public class MainTrail extends AppCompatActivity
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=1;
     private FusedLocationProviderClient mFusedLocationClient;
+    private Location mLastKnownLocation;
+    private boolean mLocationPermissionGranted;
+
+    private final static long LOCATION_REFRESH_TIME = 0;
+    private final static long LOCATION_REFRESH_DISTANCE = 0;
 
     DatabaseManager manager;
+    LocationManager locationManager;
 
     View view1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        SharedPreferences getData = getSharedPreferences("Background", Context.MODE_PRIVATE);
+//
+//        if (getData.getInt("background", 0) == 0) {
+//            setTheme(R.style.AppTheme);
+//        }
+//        else if (getData.getInt("background", 0) == 1) {
+//            setTheme(R.style.Theme1);
+//        }
+//        else if (getData.getInt("background", 0) == 2) {
+//            setTheme(R.style.Theme2);
+//        }
+//        else if (getData.getInt("background", 0) == 3) {
+//            setTheme(R.style.Theme3);
+//        }
+//        else {
+//            setTheme(R.style.AppTheme);
+//        }
+
+        setTheme(R.style.CardView_Dark);
+
         setContentView(R.layout.activity_main_trail);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         checkPermission();
+        getDeviceLocation();
+        if(mLocationPermissionGranted){
+            Log.d("Location: ", "granted");
+        }
+        else{
+            Log.d("Location: ", "denied");
+        }
         startServiceBroadcaster();
         initView();
 
-        view1 = this.getWindow().getDecorView();
-        SharedPreferences setting = getSharedPreferences("Background", Context.MODE_PRIVATE);
-        if (setting.getInt("background", Color.WHITE) == Color.BLACK) {
-            view1.setBackgroundColor(Color.BLACK);
-        }
-        else if (setting.getInt("background", Color.WHITE) == Color.GREEN) {
-            view1.setBackgroundColor(Color.GREEN);
-        }
-        else if (setting.getInt("background", Color.WHITE) == Color.BLUE) {
-            view1.setBackgroundColor(Color.BLUE);
-        }
-        else {
-            view1.setBackgroundColor(Color.WHITE);
-        }
+
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("location_change", "onLocationChanged: " + location.getLongitude() + location.getLatitude());
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 
     public void startServiceBroadcaster(){
@@ -138,23 +188,29 @@ public class MainTrail extends AppCompatActivity
     public void checkPermission(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkLocationPermission()){
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    double latitude = location.getLatitude();
-                                    double lon = location.getLongitude();
-//                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
-                                    longitude = lon;
-                                    lat = latitude;
-                                }
-                            }
-                        });
+//                mFusedLocationClient.getLastLocation()
+//                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                            @Override
+//                            public void onSuccess(Location location) {
+//                                // Got last known location. In some rare situations this can be null.
+//                                if (location != null) {
+//                                    // Logic to handle location object
+//                                    double latitude = location.getLatitude();
+//                                    double lon = location.getLongitude();
+////                                    Toast.makeText(getApplicationContext(),lat + " " + lon, Toast.LENGTH_SHORT).show();
+//                                    longitude = lon;
+//                                    lat = latitude;
+//                                }
+//                            }
+//                        });
+                Log.d("get_location", "checkPermission: ");
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,LOCATION_REFRESH_TIME,
+                        LOCATION_REFRESH_DISTANCE, this);
             }
         }
+
+
 
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayService()) {
@@ -163,6 +219,38 @@ public class MainTrail extends AppCompatActivity
         }
         else {
             Log.d("onCreate","Google Play Services available.");
+        }
+    }
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            mLastKnownLocation = task.getResult();
+                           // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                             lat = mLastKnownLocation.getLatitude();
+                            longitude = mLastKnownLocation.getLongitude();
+
+                        } else {
+                            Log.d("Location: ", "Current location is null. Using defaults.");
+                            Log.e("location", "Exception: %s", task.getException());
+                           // mMap.moveCamera(CameraUpdateFactory
+                           //         .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                           // mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
         }
     }
 
@@ -178,6 +266,8 @@ public class MainTrail extends AppCompatActivity
             public void onClick(View view) {
 
                 Intent intent = new Intent(MainTrail.this, MapView.class);
+                Log.d("LAT ", "OnMap: " + lat);
+                Log.d("LONG  ", "onMap: " + longitude);
                 intent.putExtra("longitude", longitude);
                 intent.putExtra("latitude", lat);
                 //  intent.putExtra("place_id", temp.get(position).getPlace_id());
@@ -327,24 +417,22 @@ public class MainTrail extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.mainMenu) {
+            Intent intent = new Intent(this, MainTrail.class);
+            startActivity(intent);
+        } else if (id == R.id.setting) {
+            Intent intent = new Intent(this, Setting.class);
+//            intent.putExtra(); background
+            startActivity(intent);
+        } else if (id == R.id.about) {
+            Intent intent = new Intent(this, About.class);
+//            intent.putExtra(); temp Unit
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -400,7 +488,7 @@ public class MainTrail extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("demoapp","Data is fetched");
+            Log.d("MyTrail","Data is fetched");
            // displayMovies(1, DBOpenHelper.COLUMN_NAME_RELEASE_DATE);
             Log.d("broadcast", "onReceive: " + "done");
 //            unregisterReceiver(receiver);

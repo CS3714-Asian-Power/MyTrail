@@ -7,6 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!--<style name="RatingBar" parent="Theme.AppCompat">-->
+    <!--<item name="colorControlNormal">@color/Yellow</item>-->
+    <!--<item name="colorControlActivated">@color/lightGray</item>-->
+    <!--</style>-->
 
     <style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -27,5 +31,12 @@
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">28sp</item>
     </style>
+
+    <style name="RatingBar" parent="AppTheme">
+        <item name="colorControlNormal">@color/Yellow</item>
+        <item name="colorControlActivated">@color/lightGray</item>
+    </style>
+
+    <style name="Theme1" parent="AppTheme" />
 
 </resources>

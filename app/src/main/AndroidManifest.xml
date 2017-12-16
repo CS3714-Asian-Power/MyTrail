@@ -41,6 +41,7 @@
 
         <activity android:name=".activity.MapView" />
         <activity android:name=".activity.About">
+
         </activity>
         <activity android:name=".activity.Setting"></activity>
     </application>
