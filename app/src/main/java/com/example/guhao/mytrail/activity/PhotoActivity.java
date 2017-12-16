@@ -137,16 +137,18 @@ public class PhotoActivity extends AppCompatActivity {
                 references.add(helper.getPhotoURL(2000,reference));
             }
         }
-
+        getSupportActionBar().setTitle("");
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("mcontent", "onClick: ");
-                toggle();
-            }
-        });
+//        mContentView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("mcontent", "onClick: ");
+//                toggle();
+//            }
+//        });
+
+
 
         mCustomPagerAdapter = new CustomPagerAdapter(this);
 
@@ -237,7 +239,13 @@ public class PhotoActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("mcontent", "onClick: ");
+                    toggle();
+                }
+            });
             ImageView imageView = (ImageView) itemView.findViewById(R.id.full_imageview);
 //            imageView.setImageResource(mResources[position]);
             Picasso.with(mContext).load(references.get(position)).into(imageView);
