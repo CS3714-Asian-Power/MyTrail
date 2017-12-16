@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.guhao.mytrail.api.DownloadHelper;
@@ -40,6 +41,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
         TextView location;
         TextView rating;
         ImageView thumbnail;
+        RatingBar ratingBar;
         CardView cardView;
 
         public PlaceViewHolder(View itemView) {
@@ -49,6 +51,7 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
             rating = (TextView) itemView.findViewById(R.id.rating);
             thumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
             location = (TextView)itemView.findViewById(R.id.place_location);
+            ratingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
         }
     }
 
@@ -71,9 +74,10 @@ public class  MyAdapter extends RecyclerView.Adapter<MyAdapter.PlaceViewHolder>{
             picasso.load(thumbnail_URL).into(holder.thumbnail);
 
         }
+        holder.ratingBar.setRating((float) Double.parseDouble(places.get(position).getRating()));
 
         holder.name.setText(places.get(position).getName());
-        holder.rating.setText("Rating: " + places.get(position).getRating());
+        holder.rating.setText(places.get(position).getRating());
         holder.location.setText(places.get(position).getAddress());
 
        // holder.location.setText(places.get(position).getLatitude());
