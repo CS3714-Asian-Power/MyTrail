@@ -92,7 +92,7 @@ public class MainTrail extends AppCompatActivity
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted;
     private Map<String, Boolean> activityMap;
-    private int radius = 16000;
+    private int radius = 10;
 
     private final static long LOCATION_REFRESH_TIME = 0;
     private final static long LOCATION_REFRESH_DISTANCE = 0;
