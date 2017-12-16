@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.example.guhao.mytrail.R;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
@@ -164,12 +165,14 @@ public class DetailActivity extends AppCompatActivity {
 
     public void changeBackgroundImage(DetailPlace place){
         if (place.getResult().getPhotos()!= null) {
-            String thumbnail_URL = downloadHelper.getPhotoURL(400, place.getResult().getPhotos().get(0).getPhoto_reference());
+            String thumbnail_URL = downloadHelper.getPhotoURL(1200, place.getResult().getPhotos().get(0).getPhoto_reference());
             Log.d("photo_url", "changeBackgroundImage: " + thumbnail_URL);
             Picasso.with(this).load(thumbnail_URL).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    appbar.setBackground(new BitmapDrawable(getResources(), bitmap));
+                    BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+                    drawable.setGravity(BaseSliderView.ScaleType.FitCenterCrop.ordinal());
+                    appbar.setBackground(drawable);
                 }
 
                 @Override
