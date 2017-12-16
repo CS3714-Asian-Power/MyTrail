@@ -8,13 +8,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.guhao.mytrail.R;
 
-public class Setting extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Setting extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private Spinner spinner;
+    private RadioButton cd;
+    private RadioButton fd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,11 @@ public class Setting extends AppCompatActivity implements AdapterView.OnItemSele
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        cd = (RadioButton) findViewById(R.id.cd);
+        fd = (RadioButton) findViewById(R.id.fd);
+        cd.setOnClickListener(this);
+        fd.setOnClickListener(this);
     }
 
 
@@ -64,5 +73,17 @@ public class Setting extends AppCompatActivity implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //do nothing
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.cd) {
+
+            Toast.makeText(this, "Temperature Unit has been changed to Celsius", Toast.LENGTH_SHORT).show();
+        }
+        else if (v.getId() == R.id.fd) {
+
+            Toast.makeText(this, "Temperature Unit has been changed to Fahrenheit", Toast.LENGTH_SHORT).show();
+        }
     }
 }
