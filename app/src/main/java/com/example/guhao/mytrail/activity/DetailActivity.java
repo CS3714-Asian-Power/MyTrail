@@ -116,7 +116,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 10; i++){
             View view = LayoutInflater.from(this).inflate(R.layout.layout_weather_view, null);
             weatherList.add(view);
             weatherLayout.addView(view);

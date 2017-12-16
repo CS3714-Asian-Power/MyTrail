@@ -52,4 +52,23 @@ public class WeatherUtil {
         double f = (((k - 273) * 9/5) + 32);
         return f;
     }
+
+    public String getWeekDay(int i){
+        if (i == 1)
+            return "Mon";
+        if (i == 2)
+            return "Tue";
+        if (i == 3)
+            return "Wed";
+        if (i == 4)
+            return "Thu";
+        if (i == 5)
+            return "Fri";
+        if (i == 6)
+            return "Sat";
+        if (i == 7)
+            return "Sun";
+        return null;
+    }
+
 }

@@ -13,7 +13,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="Mon"
-        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,17 +22,19 @@
         android:id="@+id/weather_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/weekday"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weekday" />
 
     <TextView
         android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/colorPrimaryLight"
         android:text="0F/28F"
-        app:layout_constraintStart_toStartOf="@+id/weekday"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weather_condition" />
 </android.support.constraint.ConstraintLayout>

@@ -87,7 +87,7 @@ public class DownloadHelper {
         StringBuilder weatherUrl = new StringBuilder("http://api.openweathermap.org/data/2.5/forecast/daily?");
         weatherUrl.append("lat=" + lat + "&");
         weatherUrl.append("lon=" + lon + "&");
-        weatherUrl.append("cnt=5&");
+        weatherUrl.append("cnt=10&");
         weatherUrl.append("appid=" + WEATHER_KEY);
         Log.d("getUrl", weatherUrl.toString());
         return weatherUrl.toString();
