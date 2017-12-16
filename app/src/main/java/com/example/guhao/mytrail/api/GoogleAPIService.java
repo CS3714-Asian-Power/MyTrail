@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -38,6 +41,7 @@ public class GoogleAPIService extends IntentService {
     public static final String PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
     public static final String GET_RESULT = "get result";
     public static final String GET_DETAIL = "get detail";
+    public static final String GET_WEATHER = "get weather";
     public static final String ACTIVITY = "activity";
     public static final String RADIUS = "radius";
     public static final String LONGITUDE = "long";
@@ -84,12 +88,12 @@ public class GoogleAPIService extends IntentService {
                     DownloadHelper downloadHelper = new DownloadHelper();
                     //String result = download(search_url);
                     //Log.d("Service", result.toString());
-                    try{
+                    try {
                         response = downloadHelper.getResponses(search_url);
                         Log.d("Service", response.toString());
                         populateResultDB(response);
-                    } catch (Exception e){
-                       Log.d("Service Intent", e.toString());
+                    } catch (Exception e) {
+                        Log.d("Service Intent", e.toString());
                     }
 
 //                    Intent broadcastIntent = new Intent();
@@ -107,17 +111,30 @@ public class GoogleAPIService extends IntentService {
                     String search_url = intent.getStringExtra(URL);
                     Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
-                    try{
+                    try {
                         response = downloadHelper.getResponses(search_url);
                         Log.d("Service", response.toString());
                         DeliverPlaceDetail(SUCCESS_RESULT, response);
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         DeliverPlaceDetail(FAILURE_RESULT, e.toString());
                         Log.d("Service Intent", e.toString());
                     }
 
                     //request things for detailed view
-                } else if (GET_LATLONG.equals(intent_action)){
+                } else if (GET_WEATHER.equals(intent_action)) {
+                    Log.d("Intent_Service", "onHandleIntent" + intent_action);
+                    String search_url = intent.getStringExtra(URL);
+                    Log.d("search_url", "onHandleIntent: " + search_url);
+                    DownloadHelper downloadHelper = new DownloadHelper();
+                    try {
+                        response = downloadHelper.getResponses(search_url);
+                        Log.d("Service", response.toString());
+                        DeliverWeather(SUCCESS_RESULT, response);
+                    } catch (Exception e) {
+                        DeliverWeather(FAILURE_RESULT, e.toString());
+                        Log.d("Service Intent", e.toString());
+                    }
+                } else if (GET_LATLONG.equals(intent_action)) {
                     mReceiver = intent.getParcelableExtra(RECEIVER);
                     if (mReceiver == null) {
                         Log.d("Error", "No receiver received. There is nowhere to send the results.");
@@ -128,17 +145,17 @@ public class GoogleAPIService extends IntentService {
                     String search_url = intent.getStringExtra(URL);
                     Log.d("search_url", "onHandleIntent: " + search_url);
                     DownloadHelper downloadHelper = new DownloadHelper();
-                    try{
+                    try {
                         response = downloadHelper.getResponses(search_url);
                         Log.d("Service", response.toString());
                         ParseLatLng(response);
 
-                       // DeliverPlaceDetail(SUCCESS_RESULT, response);
-                    } catch (Exception e){
+                        // DeliverPlaceDetail(SUCCESS_RESULT, response);
+                    } catch (Exception e) {
                         DeliverPlaceDetail(FAILURE_RESULT, e.toString());
                         Log.d("Service Intent", e.toString());
                     }
-                }else if (GET_ADDRESS.equals(intent_action)){
+                } else if (GET_ADDRESS.equals(intent_action)) {
                     String errorMessage = "";
 
                     mReceiver = intent.getParcelableExtra(RECEIVER);
@@ -151,8 +168,8 @@ public class GoogleAPIService extends IntentService {
 
                     // Get the location passed to this service through an extra.
                     Location location = new Location("");
-                    location.setLongitude(intent.getDoubleExtra(LONGITUDE,-80.43301769999999 ));
-                    location.setLatitude(intent.getDoubleExtra(LATITUDE,37.2432963 ));
+                    location.setLongitude(intent.getDoubleExtra(LONGITUDE, -80.43301769999999));
+                    location.setLatitude(intent.getDoubleExtra(LATITUDE, 37.2432963));
 
                     // Make sure that the location data was really sent over through an extra. If it wasn't,
                     // send an error error message and return.
@@ -200,7 +217,7 @@ public class GoogleAPIService extends IntentService {
                     }
 
                     // Handle case where no address was found.
-                    if (addresses == null || addresses.size()  == 0) {
+                    if (addresses == null || addresses.size() == 0) {
                         if (errorMessage.isEmpty()) {
                             errorMessage = "No address found";
                             Log.e(TAG, errorMessage);
@@ -219,7 +236,7 @@ public class GoogleAPIService extends IntentService {
                         // getPostalCode() ("94043", for example)
                         // getCountryCode() ("US", for example)
                         // getCountryName() ("United States", for example)
-                        for(int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                             addressFragments.add(address.getAddressLine(i));
                             //address.get
                         }
@@ -231,12 +248,11 @@ public class GoogleAPIService extends IntentService {
                         //        TextUtils.join(System.getProperty("line.separator"), addressFragments));
 
                     }
+
+
                 }
 
-
             }
-
-
     }
 
     private void populateResultDB(String jsonData) {
@@ -362,6 +378,16 @@ public class GoogleAPIService extends IntentService {
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
     }
+
+    private void DeliverWeather(int resultCode, String json){
+        Log.d("weather_json", "DeliverWeather: " +json);
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.putExtra("response", json);
+        broadcastIntent.setAction(DetailActivity.ResponseReceiver.ACTION_WEATHER);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        sendBroadcast(broadcastIntent);
+    }
+
     private void deliverResultToReceiver(int resultCode, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(RETURN_ADDRESS, message);

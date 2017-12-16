@@ -14,9 +14,11 @@ import java.net.URL;
  */
 
 public class DownloadHelper {
-   // private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
-    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
-//    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
+//    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
+//    private static final String KEY_1 = "AIzaSyA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
+    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
+//    private static final String KEY_1 = "AIzaSyArtAouwEhQI2Ot_n2t9T_EydUSNMH0j-o";
+    private static final String WEATHER_KEY = "5aa5b38d6ea0410fca7440355dbb0900";
 
 
     public String getResponses(String theUrl) throws IOException{
@@ -78,6 +80,17 @@ public class DownloadHelper {
         googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
+    }
+
+    //get weather URL
+    public String getUrlWeather(double lat, double lon){
+        StringBuilder weatherUrl = new StringBuilder("http://api.openweathermap.org/data/2.5/forecast/daily?");
+        weatherUrl.append("lat=" + lat + "&");
+        weatherUrl.append("lon=" + lon + "&");
+        weatherUrl.append("cnt=10&");
+        weatherUrl.append("appid=" + WEATHER_KEY);
+        Log.d("getUrl", weatherUrl.toString());
+        return weatherUrl.toString();
     }
 
     //get detail of a place by place ID
