@@ -5,13 +5,13 @@
     <!--<color name="colorPirmaryList">#C8E6C9</color>-->
     <!--<color name="colorAccent">#CDDC39</color>-->
 
-    <!--<color name="colorPrimary">#FF5722</color>-->
-    <!--<color name="colorPrimaryDark">#E64A19</color>-->
-    <!--<color name="colorPirmaryLight">#FFCCBC</color>-->
-    <!--<color name="colorAccent">#FF9800</color>-->
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#E64A19</color>
+    <color name="colorPirmaryLight">#FFCCBC</color>
+    <color name="colorAccent">#FF9800</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorPirmaryLight">#C5CAE9</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorPirmaryLight">#C5CAE9</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
 </resources>
