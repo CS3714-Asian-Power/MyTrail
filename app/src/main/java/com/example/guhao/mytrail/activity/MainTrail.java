@@ -84,7 +84,7 @@ public class MainTrail extends AppCompatActivity
 
     DownloadHelper downloadHelper;
     double longitude = -80.43301769999999, lat = 37.2432963;
-    String activity = "hiking+camping";
+    String activity = "hiking+campground";
     private ResponseReceiver receiver;
     private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION=99;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -92,7 +92,7 @@ public class MainTrail extends AppCompatActivity
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted;
     private Map<String, Boolean> activityMap;
-    private int radius = 10;
+    private int radius = 16000;
 
     private final static long LOCATION_REFRESH_TIME = 0;
     private final static long LOCATION_REFRESH_DISTANCE = 0;
@@ -179,7 +179,9 @@ public class MainTrail extends AppCompatActivity
 
     public void startServiceBroadcaster(){
         //registering a local broadcast receiver that is activated when "movies_fetched"
+
         //action happens
+       // int radiusinMile = radius*1600;
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new ResponseReceiver();
@@ -229,8 +231,8 @@ public class MainTrail extends AppCompatActivity
 
     public void startFilterIntent(String activity, String radius) {
         int r = Integer.parseInt(radius);
-        this.radius = r;
-        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,r,activity);
+        this.radius = r*1600;
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,this.radius,activity);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
@@ -361,7 +363,7 @@ public class MainTrail extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_trail, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
@@ -417,7 +419,7 @@ public class MainTrail extends AppCompatActivity
             cb_trailing.setChecked(activityMap.get("climbing") == true);
 
 
-            editText_radius.setText(radius+"");
+            editText_radius.setText((radius/1600)+"");
 
             mDialog.setTitle(R.string.preference);
             mDialog.setView(dialogView);
@@ -440,7 +442,7 @@ public class MainTrail extends AppCompatActivity
                     if (cb_camping.isChecked())
                     {
                         activityMap.put("camping", true);
-                        a = a + "camping+";
+                        a = a + "campground+";
                     } else
                         activityMap.put("camping",false);
                     if (cb_trailing.isChecked())
