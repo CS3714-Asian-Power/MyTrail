@@ -45,6 +45,7 @@ import com.example.guhao.mytrail.api.AddressService;
 import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.Constants;
+import com.example.guhao.mytrail.data.Loc;
 import com.example.guhao.mytrail.data.Place;
 import com.example.guhao.mytrail.database.DBOpenHelper;
 import com.example.guhao.mytrail.database.DatabaseManager;
@@ -128,18 +129,7 @@ public class MainTrail extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-      //  checkLocationPermission();
-      //  getDeviceLocation();
-        if(mLocationPermissionGranted){
-            Log.d("Location: ", "granted");
-        }
-        else{
-            Log.d("Location: ", "denied");
-        }
-        startServiceBroadcaster();
-        initView();
-        mResultReceiver = new AddressResultReceiver(new Handler());
-        AddressIntentService(longitude, lat);
+
 
         view1 = this.getWindow().getDecorView();
         SharedPreferences setting = getSharedPreferences("Background", Context.MODE_PRIVATE);
@@ -190,6 +180,7 @@ public class MainTrail extends AppCompatActivity
         downloadHelper = new DownloadHelper();
         double m = radius * MILE_TO_METER;
         String the_url = downloadHelper.getUrlCoordinate(lat,longitude,(int)m,activity);
+        Log.d("broadcast_get_location", "startServiceBroadcaster: " + longitude + " " + lat);
         Log.d("URl_main", the_url);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
@@ -273,7 +264,21 @@ public class MainTrail extends AppCompatActivity
                             try {
                                 longitude = mLastKnownLocation.getLongitude();
                                 lat = mLastKnownLocation.getLatitude();
+                                Log.d("device_location", "onComplete: " + longitude + " " + lat);
 
+                                Log.d("aftergetlocation", "onCreate: "+longitude);
+                                if(mLocationPermissionGranted){
+                                    Log.d("Location: ", "granted");
+
+                                }
+                                else{
+                                    Log.d("Location: ", "denied");
+                                }
+
+                                startServiceBroadcaster();
+                                initView();
+                                mResultReceiver = new AddressResultReceiver(new Handler());
+                                AddressIntentService(longitude, lat);
                             }catch (Exception e){
                                 Log.d("error", e.toString());
                             }
@@ -282,6 +287,7 @@ public class MainTrail extends AppCompatActivity
                             Log.e("Device Location", "Exception: %s", task.getException());
                             longitude = -80.43301769999999;
                             lat = 37.2432963;
+
                         }
                     }
                 });
@@ -289,6 +295,8 @@ public class MainTrail extends AppCompatActivity
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+
+        Log.d("last", "getDeviceLocation: "+ longitude);
     }
 
 
