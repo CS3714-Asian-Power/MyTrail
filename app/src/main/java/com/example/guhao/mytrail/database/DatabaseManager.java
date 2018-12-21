@@ -56,6 +56,17 @@ public class DatabaseManager {
 
     }
 
+    public boolean checkExist(String id) {
+        String Query = "Select * from " + DBOpenHelper.FAVORITE_TABLE + " where " + DBOpenHelper.COLUMN_PLACE_ID + " = '" + id + "'";
+        Cursor cursor = database.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
 
 //    public void updateMovie(String[] title, int like){
 //        ContentValues values = new ContentValues();
@@ -110,98 +121,7 @@ public class DatabaseManager {
         return place;
 
     }
-    /*public List<Place> filterMovies (){
-        String[] likes = {"1"};
-        Cursor cursor = database.query(DBOpenHelper.TABLE_NAME,
-                new String[]{
-                        DBOpenHelper.COLUMN_ID,
-                        DBOpenHelper.COLUMN_NAME_TITLE,
-                        DBOpenHelper.COLUMN_NAME_RELEASE_DATE,
-                        DBOpenHelper.COLUMN_NAME_VOTE,
-                        DBOpenHelper.COLUMN_NAME_POPUlARITY,
-                        DBOpenHelper.COLUMN_NAME_OVERVIEW,
-                        DBOpenHelper.COLUMN_NAME_POSTER,
-                        DBOpenHelper.COLUMN_NAME_BACKDROP,
-                        DBOpenHelper.COLUMN_NAME_LIKE
 
-                }, DBOpenHelper.COLUMN_NAME_LIKE + "= ?", likes , null, null, null, null);
-        cursor.moveToFirst();
-        Movie movie = new Movie();
-        List<Movie> result =new  ArrayList<Movie>();
-        while (!cursor.isAfterLast()) {
-            movie = new Movie();
-            movie.setTitle(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_TITLE)));
-            movie.setDate(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_RELEASE_DATE)));
-            movie.setRating(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_VOTE)));
-            movie.setPopularity(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_POPUlARITY)));
-            movie.setPoster(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_POSTER)));
-            movie.setBackdrop(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_BACKDROP)));
-            movie.setOverview(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_OVERVIEW)));
-            movie.setId(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_ID)));
-            movie.setLike(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_LIKE)));
-            cursor.moveToNext();
-            result.add(movie);
-
-        }
-        return result;
-
-    }*/
-    /*public List<Place> getAllRecordsOrderedBy(String key) {
-        String order = " DESC";
-        if( key == DBOpenHelper.COLUMN_NAME_TITLE){
-            order = " ASC";
-        }
-        Cursor cursor = database.query(DBOpenHelper.TABLE_NAME,
-                new String[]{
-                        DBOpenHelper.COLUMN_ID,
-                        DBOpenHelper.COLUMN_NAME_TITLE,
-                        DBOpenHelper.COLUMN_NAME_RELEASE_DATE,
-                        DBOpenHelper.COLUMN_NAME_VOTE,
-                        DBOpenHelper.COLUMN_NAME_POPUlARITY,
-                        DBOpenHelper.COLUMN_NAME_OVERVIEW,
-                        DBOpenHelper.COLUMN_NAME_POSTER,
-                        DBOpenHelper.COLUMN_NAME_BACKDROP,
-                        DBOpenHelper.COLUMN_NAME_LIKE
-
-                }, null, null, null, null, key+order, null);
-        cursor.moveToFirst();
-        Movie movie;
-        List<Movie> result =new  ArrayList<Movie>();
-        while (!cursor.isAfterLast()) {
-            movie = new Movie();
-            movie.setTitle(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_TITLE)));
-
-            movie.setDate(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_RELEASE_DATE)));
-            movie.setRating(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_VOTE)));
-            movie.setPopularity(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_POPUlARITY)));
-            movie.setPoster(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_POSTER)));
-            movie.setBackdrop(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_BACKDROP)));
-            movie.setOverview(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_OVERVIEW)));
-            movie.setId(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_ID)));
-            movie.setLike(
-                    cursor.getString(cursor.getColumnIndex(DBOpenHelper.COLUMN_NAME_LIKE)));
-            cursor.moveToNext();
-            result.add(movie);
-        }
-        return result;
-    }*/
 
     public List<Place> getAllRecords(int tableID) {
         String table_name;
@@ -256,9 +176,9 @@ public class DatabaseManager {
         }
     }
 
-    public void deleteAllFavorite() {
+    public void deleteFavorite(String id) {
         if (database.isOpen()) {
-            database.execSQL("DELETE FROM " + DBOpenHelper.FAVORITE_TABLE );
+            database.execSQL("DELETE FROM " + DBOpenHelper.FAVORITE_TABLE + " WHERE " + DBOpenHelper.COLUMN_PLACE_ID + " = '" + id + "'");
         }
     }
 }

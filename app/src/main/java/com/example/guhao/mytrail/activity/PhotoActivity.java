@@ -132,9 +132,11 @@ public class PhotoActivity extends AppCompatActivity {
         if (getIntent() != null){
             place = new Gson().fromJson(getIntent().getStringExtra("json"), DetailPlace.class);
             List<DetailPlace.ResultBean.PhotosBean> bean = place.getResult().getPhotos();
-            for (int i = 0; i < bean.size(); i++){
-                String reference = bean.get(i).getPhoto_reference();
-                references.add(helper.getPhotoURL(2000,reference));
+            if (bean != null) {
+                for (int i = 0; i < bean.size(); i++) {
+                    String reference = bean.get(i).getPhoto_reference();
+                    references.add(helper.getPhotoURL(2000, reference));
+                }
             }
         }
         getSupportActionBar().setTitle("");

@@ -32,6 +32,7 @@ import com.example.guhao.mytrail.api.DownloadHelper;
 import com.example.guhao.mytrail.api.GoogleAPIService;
 import com.example.guhao.mytrail.data.DetailPlace;
 import com.example.guhao.mytrail.data.Weather;
+import com.example.guhao.mytrail.database.DatabaseManager;
 import com.example.guhao.mytrail.util.WeatherUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,6 +67,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private List<View> weatherList;
     private int favoriteState = 0;
     private String rawJson;
+    private DatabaseManager manager;
+    private DetailPlace detailPlace;
+
 
     private GoogleMap mMap;
     double longitude = -80.43301769999999, lat = 37.2432963;
@@ -92,49 +96,75 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void initView(){
+        manager = new DatabaseManager(this.getApplicationContext());
+        manager.open();
         weatherList = new ArrayList<>();
         Intent intent = getIntent();
-        if (getIntent() != null){
+        if (getIntent() != null) {
             place_id = intent.getStringExtra("place_id");
             Log.d("place_id_detail", "onCreate: " + place_id);
-            String name = intent.getStringExtra("name");
+            final String name = intent.getStringExtra("name");
+            final String rating = intent.getStringExtra("rating");
+            final String reference = intent.getStringExtra("thumbnail");
+            final String address = intent.getStringExtra("address");
+            final String longitude = intent.getStringExtra("longitude");
+            final String latitude = intent.getStringExtra("latitude");
 //            toolbar.setTitle(name);
             getSupportActionBar().setTitle(name);
             Log.d("place_name", "initView: " + name);
-        }
+            final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            if (manager.checkExist(place_id)){
+                favoriteState = 1;
+                fab.setImageResource(R.mipmap.ic_star_white_24dp);
+                Log.d("checkiffavorite", "initView: ");
+            }else {
+                favoriteState = 0;
+                fab.setImageResource(R.mipmap.ic_star_border_white_24dp);
+            }
+
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                if (favoriteState == 0) {
-                    fab.setImageResource(R.mipmap.ic_star_white_24dp);
-                    favoriteState = 1;
-                }else if (favoriteState == 1){
-                    fab.setImageResource(R.mipmap.ic_star_border_white_24dp);
-                    favoriteState = 0;
+                    if (favoriteState == 0) {
+                        fab.setImageResource(R.mipmap.ic_star_white_24dp);
+                        putInFavorites(name,rating,reference,address,longitude,latitude);
+                        favoriteState = 1;
+                    } else if (favoriteState == 1) {
+                        fab.setImageResource(R.mipmap.ic_star_border_white_24dp);
+                        manager.deleteFavorite(place_id);
+                        favoriteState = 0;
+                    }
                 }
-            }
-        });
+            });
 
-        for (int i = 0; i < 10; i++){
-            View view = LayoutInflater.from(this).inflate(R.layout.layout_weather_view, null);
-            weatherList.add(view);
-            weatherLayout.addView(view);
+            for (int i = 0; i < 10; i++) {
+                View view = LayoutInflater.from(this).inflate(R.layout.layout_weather_view, null);
+                weatherList.add(view);
+                weatherLayout.addView(view);
+            }
+
+            appbar.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    Log.d("touch", "onTouch: ");
+                    Intent intent = new Intent(DetailActivity.this, PhotoActivity.class);
+                    intent.putExtra("json", rawJson);
+                    startActivity(intent);
+                    return false;
+                }
+            });
         }
+    }
 
-        appbar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.d("touch", "onTouch: ");
-                Intent intent = new Intent(DetailActivity.this, PhotoActivity.class);
-                intent.putExtra("json", rawJson);
-                startActivity(intent);
-                return false;
-            }
-        });
+    private void putInFavorites(String name, String rating, String reference, String address, String longitude, String latitude ){
+        manager = new DatabaseManager(this.getApplicationContext());
+        manager.open();
+        manager.insertPlaceFavorite(name, place_id, Float.parseFloat(rating),reference,address,Float.parseFloat(longitude),Float.parseFloat(latitude));
+        manager.close();
     }
 
     @Override
@@ -213,7 +243,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             if (intent.getAction().equals(ACTION_RESP)) {
                 String json = intent.getStringExtra("response");
                 rawJson = json;
-                DetailPlace detailPlace = gson.fromJson(json, DetailPlace.class);
+                detailPlace = gson.fromJson(json, DetailPlace.class);
                 Log.d("detail_activity", "onReceive: " + detailPlace.getStatus());
 
                 DetailPlace.ResultBean.GeometryBean.LocationBean locationBean = detailPlace.getResult().getGeometry().getLocation();
@@ -337,5 +367,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        unregisterReceiver(weatherReceiver);
     }
 }
