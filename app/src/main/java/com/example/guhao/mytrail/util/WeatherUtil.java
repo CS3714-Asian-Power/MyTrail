@@ -1,5 +1,7 @@
 package com.example.guhao.mytrail.util;
 
+import android.util.Log;
+
 import com.example.guhao.mytrail.R;
 
 /**
@@ -42,8 +44,18 @@ public class WeatherUtil {
             id = R.mipmap.icons8_stormy_weather;
         else if (code == 100)
             id = R.mipmap.icons8_light_rain;
-        else
+        else if (code == 600)
+            id = R.mipmap.icons8_light_snow;
+        else if (code == 601 || code == 602)
+            id = R.mipmap.icons8_snow;
+        else if (code == 611 ||code == 612 ||code == 615 ||code == 616 )
+            id = R.mipmap.icons8_sleet;
+        else if (code == 620 ||code == 621 ||code == 622)
+            id = R.mipmap.icons8_snow_storm;
+        else {
+            Log.d("strangeWeather", "getWeatherID: " + code);
             id = R.mipmap.ic_wb_sunny_black_24dp;
+        }
 
         return id;
     }

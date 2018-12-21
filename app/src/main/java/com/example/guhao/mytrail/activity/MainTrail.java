@@ -195,6 +195,7 @@ public class MainTrail extends AppCompatActivity
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, new_url);
         startService(msgIntent);
+        Log.d("url", "startCityIntent: "+activity + " " + m+new_url);
 
     }
     public void startGetLatLngIntent(String address){
@@ -222,8 +223,8 @@ public class MainTrail extends AppCompatActivity
 
     public void startFilterIntent(String activity, String radius) {
         int r = Integer.parseInt(radius);
-        this.radius = r*1600;
-        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,this.radius,activity);
+        r = (int)(r*MILE_TO_METER);
+        String the_url = downloadHelper.getUrlCoordinate(lat,longitude,r,activity);
         Intent msgIntent = new Intent(this, GoogleAPIService.class);
         msgIntent.setAction(GoogleAPIService.GET_RESULT);
         msgIntent.putExtra(GoogleAPIService.URL, the_url);
@@ -394,6 +395,7 @@ public class MainTrail extends AppCompatActivity
                 startGetLatLngIntent(query);
 
                 startCityIntent(query);
+
                 return true;
             }
         };
@@ -427,7 +429,7 @@ public class MainTrail extends AppCompatActivity
             cb_trailing.setChecked(activityMap.get("climbing") == true);
 
 
-            editText_radius.setText((radius/1600)+"");
+            editText_radius.setText(radius+"");
 
             mDialog.setTitle(R.string.preference);
             mDialog.setView(dialogView);
@@ -436,6 +438,7 @@ public class MainTrail extends AppCompatActivity
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Log.d("dialog", "onClick: ok");
                     String r = editText_radius.getText().toString();
+                    radius = Integer.parseInt(r);
                     String a = "";
                     if (cb_hiking.isChecked()) {
                         activityMap.put("hiking", true);

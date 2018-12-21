@@ -135,6 +135,7 @@ public class GoogleAPIService extends IntentService {
                         Log.d("Service Intent", e.toString());
                     }
                 } else if (GET_LATLONG.equals(intent_action)) {
+
                     mReceiver = intent.getParcelableExtra(RECEIVER);
                     if (mReceiver == null) {
                         Log.d("Error", "No receiver received. There is nowhere to send the results.");

@@ -17,7 +17,7 @@ public class DownloadHelper {
 //    private static final String KEY_1 = "AIzaSyCyvbfMfwNyEs4_7C1oXuc7ZjMf_UhXe6c";
 //    private static final String KEY_1 = "AIzaS®yA7pmEvkGaCTCbKys5mPQaAGWjNIxEcj2c";
 //    private static final String KEY_1 = "AIzaSyBjPJspWVbnt-pyCrlky5osRy-H3jfAWKs";
-    private static final String KEY_1 = "AIzaSyCfDsgTNZ4Kkf1NwODVN5TEE_6h_OP8fuA";
+    private static final String KEY_1 = "AIzaSyCXQxU_8WWtZzWwq-scqTyqlO2J6upa5wA";
 //    private static final String KEY_1 = "AIzaSyArtAouwEhQI2Ot_n2t9T_EydUSNMH0j-o";
     private static final String WEATHER_KEY = "5aa5b38d6ea0410fca7440355dbb0900";
 
@@ -115,6 +115,7 @@ public class DownloadHelper {
     public String getLatLngURL (String address){
         StringBuilder googlePlacesUrl = new StringBuilder("http://maps.googleapis.com/maps/api/geocode/json?address=");
         googlePlacesUrl.append(address);
+        googlePlacesUrl.append("&key=" + KEY_1);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
