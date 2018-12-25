@@ -98,7 +98,7 @@ public class MainTrail extends AppCompatActivity
     {
         LISTS,FAVORITES;
     }
-    private int radius = 100;
+    private int radius = 20;
 
     private State navState = State.LISTS;
 
