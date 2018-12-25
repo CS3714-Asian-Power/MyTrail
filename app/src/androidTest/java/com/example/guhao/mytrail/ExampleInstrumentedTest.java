@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.guhao.mytrail", appContext.getPackageName());
+        assertEquals("com.example.guhao.guhao.mytrail", appContext.getPackageName());
     }
 }

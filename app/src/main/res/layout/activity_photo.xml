@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/realBlack"
-    tools:context="com.example.guhao.mytrail.activity.PhotoActivity">
+    tools:context="guhao.mytrail.activity.PhotoActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
