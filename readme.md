@@ -7,9 +7,11 @@ Enjoy your time with MyTrail!
 Any feedback? Contact me at guhao6869@gmail.com with any concerns or advice.
 
 <p float="left">
-	<img src="screenshot/1.png" alt="alt text" width="200" >
-	<img src="screenshot/2.png" alt="alt text" width="200" >
-	<img src="screenshot/3.png" alt="alt text" width="200" >
-	<img src="screenshot/4.png" alt="alt text" width="200" >
+	<img src="screenshot/1.png" alt="alt text" width="150" >
+	<img src="screenshot/2.png" alt="alt text" width="150" >
+	<img src="screenshot/3.png" alt="alt text" width="150" >
+	<img src="screenshot/4.png" alt="alt text" width="150" >
+	<img src="screenshot/5.png" alt="alt text" width="150" >
+	<img src="screenshot/6.png" alt="alt text" width="150" >
 </p>
 
