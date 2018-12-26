@@ -12,6 +12,5 @@ Any feedback? Contact me at guhao6869@gmail.com with any concerns or advice.
 	<img src="screenshot/3.png" alt="alt text" width="150" >
 	<img src="screenshot/4.png" alt="alt text" width="150" >
 	<img src="screenshot/5.png" alt="alt text" width="150" >
-	<img src="screenshot/6.png" alt="alt text" width="150" >
 </p>
 
