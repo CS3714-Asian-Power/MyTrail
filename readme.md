@@ -6,25 +6,10 @@ Enjoy your time with MyTrail!
 
 Any feedback? Contact me at guhao6869@gmail.com with any concerns or advice.
 
-<img src="screenshot/1.png" alt="alt text" width="200" >
-<img src="screenshot/2.png" alt="alt text" width="200" >
-<img src="screenshot/3.png" alt="alt text" width="200" >
-<img src="screenshot/4.png" alt="alt text" width="200" >
+<p float="left">
+	<img src="screenshot/1.png" alt="alt text" width="200" >
+	<img src="screenshot/2.png" alt="alt text" width="200" >
+	<img src="screenshot/3.png" alt="alt text" width="200" >
+	<img src="screenshot/4.png" alt="alt text" width="200" >
+</p>
 
-
-<div class="row">
-  <div class="column">
-    <img src="screenshot/1.png" alt="alt text" width="200" >
-  </div>
-  <div class="column">
-    <img src="screenshot/2.png" alt="alt text" width="200" >
-
-  </div>
-  <div class="column">
-    <img src="screenshot/3.png" alt="alt text" width="200" >
-  </div>
-  <div class="column">
-    <img src="screenshot/4.png" alt="alt text" width="200" >
-  </div>
-
-</div>
