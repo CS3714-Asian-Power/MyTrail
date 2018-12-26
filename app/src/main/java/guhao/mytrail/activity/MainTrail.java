@@ -24,6 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -60,7 +61,7 @@ import guhao.mytrail.database.DatabaseManager;
 import guhao.mytrail.listener.RecyclerItemClickListener;
 
 public class MainTrail extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, android.location.LocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener, android.location.LocationListener{
 
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
@@ -74,7 +75,6 @@ public class MainTrail extends AppCompatActivity
     double longitude = -80.43301769999999, lat = 37.2432963;
     String activity = "hiking+campground";
     private ResponseReceiver receiver;
-    private final static int MY_PERMISSION_ACCESS_COURSE_LOCATION = 99;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
@@ -114,13 +114,6 @@ public class MainTrail extends AppCompatActivity
             Log.d("onCreate", "Google Play Services available.");
         }
 
-        getLocationPermission();
-
-        // Turn on the My Location layer and the related control on the map.
-        //updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
 
 
         view1 = this.getWindow().getDecorView();
@@ -134,6 +127,18 @@ public class MainTrail extends AppCompatActivity
         } else {
             view1.setBackgroundColor(Color.WHITE);
         }
+
+        getLocationPermission();
+
+        // Turn on the My Location layer and the related control on the map.
+        //updateLocationUI();
+        Log.d("debugging", "onCreate: ");
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+        Log.d("debugging", "onCreate after getlocation: ");
+        initView();
+
+        Log.d("debugging", "onCreate done: ");
     }
 
     @Override
@@ -155,6 +160,8 @@ public class MainTrail extends AppCompatActivity
     public void onProviderDisabled(String s) {
 
     }
+
+
 
     public void startServiceBroadcaster() {
         //registering a local broadcast receiver that is activated when "movies_fetched"
@@ -241,6 +248,8 @@ public class MainTrail extends AppCompatActivity
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+        Log.d("debugging", "getDeviceLocation: permission" + mLocationPermissionGranted);
+
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationClient.getLastLocation();
@@ -265,9 +274,9 @@ public class MainTrail extends AppCompatActivity
                                 } else {
                                     Log.d("Location: ", "denied");
                                 }
-
+//                                initView();
                                 startServiceBroadcaster();
-                                initView();
+
                                 mResultReceiver = new AddressResultReceiver(new Handler());
                                 AddressIntentService(longitude, lat);
                             } catch (Exception e) {
@@ -520,6 +529,9 @@ public class MainTrail extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    getLocationPermission();
+                    getDeviceLocation();
+
                 }
             }
         }
@@ -541,6 +553,8 @@ public class MainTrail extends AppCompatActivity
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
+
 
     public class ResponseReceiver extends BroadcastReceiver {
         public static final String ACTION_RESP =
